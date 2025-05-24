@@ -153,15 +153,11 @@ class _HomePageState extends State<HomePage> {
           children: [
             Padding(
               padding: const EdgeInsets.all(10),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildDDayCounter(),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildSupportRateChart(),
-                  ),
+                  _buildDDayCounter(),
+                  const SizedBox(height: 16),
+                  _buildSupportRateChart(),
                 ],
               ),
             ),
@@ -186,16 +182,12 @@ class _HomePageState extends State<HomePage> {
 
         return Container(
           padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade100,
-            borderRadius: BorderRadius.circular(10),
-          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
                 '2025년 대선까지',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
@@ -440,24 +432,22 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSupportRateChart() {
     return Container(
       padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.green.shade100,
-        borderRadius: BorderRadius.circular(10),
-      ),
+      constraints: const BoxConstraints(maxWidth: 600),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
             '실시간 지지율',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: 150,
+            height: 200,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
                 maxY: 100,
+                barTouchData: BarTouchData(enabled: false),
                 barGroups: [
                   _makeBarGroup(0, 45, '이재명'),
                   _makeBarGroup(1, 36, '김문수'),
@@ -475,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.only(top: 5),
                           child: Text(
                             names[value.toInt()],
-                            style: const TextStyle(fontSize: 10),
+                            style: const TextStyle(fontSize: 12),
                           ),
                         );
                       },
@@ -488,7 +478,7 @@ class _HomePageState extends State<HomePage> {
                       getTitlesWidget: (value, meta) {
                         return Text(
                           '${value.toInt()}%',
-                          style: const TextStyle(fontSize: 10),
+                          style: const TextStyle(fontSize: 12),
                         );
                       },
                     ),
