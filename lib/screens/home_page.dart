@@ -415,16 +415,11 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 20),
           LayoutBuilder(
             builder: (context, constraints) {
-              return GridView.builder(
+              return ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: constraints.maxWidth > 600 ? 2 : 1,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
                 itemCount: 4,
+                separatorBuilder: (context, index) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final candidates = ['이재명', '김문수', '이준석', '권영국'];
                   return _buildCandidateCard(candidates[index], '', index);
@@ -485,158 +480,170 @@ class _HomePageState extends State<HomePage> {
 
     return GlassCard(
       opacity: 0.5,
-      child: ExpansionTile(
-        initiallyExpanded: _expandedPanelIndices.contains(index),
-        onExpansionChanged: (isExpanded) {
-          setState(() {
-            if (isExpanded) {
-              _expandedPanelIndices.add(index);
-            } else {
-              _expandedPanelIndices.remove(index);
-            }
-          });
-        },
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: getPartyColor(name).withOpacity(0.3),
-                  width: 1,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          initiallyExpanded: _expandedPanelIndices.contains(index),
+          onExpansionChanged: (isExpanded) {
+            setState(() {
+              if (isExpanded) {
+                _expandedPanelIndices.add(index);
+              } else {
+                _expandedPanelIndices.remove(index);
+              }
+            });
+          },
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 120,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: getPartyColor(name).withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      'assets/images/${getImageName()}.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.black.withOpacity(0.05),
+                          child: Center(
+                            child: Icon(
+                              Icons.person,
+                              size: 50,
+                              color: getPartyColor(name).withOpacity(0.3),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  'assets/images/${getImageName()}.png',
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.black.withOpacity(0.05),
-                      child: Center(
-                        child: Icon(
-                          Icons.person,
-                          size: 50,
-                          color: getPartyColor(name).withOpacity(0.3),
-                        ),
-                      ),
-                    );
-                  },
+              const SizedBox(height: 10),
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            Text(
-              getParty(name),
-              style: TextStyle(
-                fontSize: 14,
-                color: getPartyColor(name),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: getPartyColor(name).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                getSlogan(),
+              Text(
+                getParty(name),
                 style: TextStyle(
                   fontSize: 14,
-                  fontStyle: FontStyle.italic,
                   color: getPartyColor(name),
+                  fontWeight: FontWeight.w500,
                 ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: getPartyColor(name).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  getSlogan(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                    color: getPartyColor(name),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 16.0,
+                bottom: 8.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '이런 정책을 약속드립니다!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ...candidatesPolicies[name]!.entries.map((entry) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: getPartyColor(name).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              entry.key,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: getPartyColor(name),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ...entry.value.map((policy) => Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16.0,
+                              bottom: 8.0,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '✓ ',
+                                  style: TextStyle(
+                                    color: getPartyColor(name),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    policy,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )).toList(),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ],
               ),
             ),
           ],
         ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '이런 정책을 약속드립니다!',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ...candidatesPolicies[name]!.entries.map((entry) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: getPartyColor(name).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          entry.key,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: getPartyColor(name),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      ...entry.value.map((policy) => Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16.0,
-                          bottom: 8.0,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '✓ ',
-                              style: TextStyle(
-                                color: getPartyColor(name),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                policy,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )).toList(),
-                      const SizedBox(height: 16),
-                    ],
-                  );
-                }).toList(),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
