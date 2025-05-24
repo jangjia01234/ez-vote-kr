@@ -44,9 +44,21 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildDDayCounter(),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildDDayCounter(),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildSupportRateChart(),
+                  ),
+                ],
+              ),
+            ),
             _buildCandidateComparison(),
-            _buildSupportRateChart(),
           ],
         ),
       ),
@@ -66,21 +78,25 @@ class _HomePageState extends State<HomePage> {
         final seconds = difference.inSeconds % 60;
 
         return Container(
-          padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
             color: Colors.blue.shade100,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '2025년 대선까지 남은 시간',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                '2025년 대선까지',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
-                '$days일 $hours시간 $minutes분 $seconds초',
+                '$days일 $hours시간',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '$minutes분 $seconds초',
                 style: const TextStyle(fontSize: 20),
               ),
             ],
@@ -208,30 +224,30 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSupportRateChart() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.green.shade100,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
             '실시간 지지율',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           SizedBox(
-            height: 300,
+            height: 150,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
                 maxY: 100,
                 barGroups: [
-                  _makeBarGroup(0, 30, '이재명'),
-                  _makeBarGroup(1, 25, '김문수'),
-                  _makeBarGroup(2, 20, '이준석'),
-                  _makeBarGroup(3, 15, '권영국'),
+                  _makeBarGroup(0, 45, '이재명'),
+                  _makeBarGroup(1, 36, '김문수'),
+                  _makeBarGroup(2, 10, '이준석'),
+                  _makeBarGroup(3, 5, '권영국'),
                 ],
                 titlesData: FlTitlesData(
                   show: true,
@@ -240,9 +256,12 @@ class _HomePageState extends State<HomePage> {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         const names = ['이재명', '김문수', '이준석', '권영국'];
-                        return Text(
-                          names[value.toInt()],
-                          style: const TextStyle(fontSize: 12),
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text(
+                            names[value.toInt()],
+                            style: const TextStyle(fontSize: 10),
+                          ),
                         );
                       },
                     ),
@@ -251,6 +270,12 @@ class _HomePageState extends State<HomePage> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          '${value.toInt()}%',
+                          style: const TextStyle(fontSize: 10),
+                        );
+                      },
                     ),
                   ),
                   topTitles: const AxisTitles(
@@ -260,7 +285,18 @@ class _HomePageState extends State<HomePage> {
                     sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
               ),
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            '출처: 한국갤럽 (2025.5.20~22)',
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.grey,
+              fontStyle: FontStyle.italic,
             ),
           ),
         ],
@@ -275,7 +311,7 @@ class _HomePageState extends State<HomePage> {
         BarChartRodData(
           toY: y,
           color: Colors.blue,
-          width: 25,
+          width: 15,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(5)),
         ),
       ],
