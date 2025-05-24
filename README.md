@@ -1,16 +1,32 @@
-# politics_web_flutter
+# 2025 대선 공약 비교 웹사이트
 
-A new Flutter project.
+Flutter로 개발된 2025년 대선 정보 제공 웹 애플리케이션입니다. 정치를 잘 모르는 사람도 이해하기 쉽도록 구성했으며, 후보자들의 실시간 지지율과 공약을 한눈에 볼 수 있습니다.
 
-## Getting Started
+## 주요 기능 🚀
 
-This project is a starting point for a Flutter application.
+- **실시간 D-Day 카운터**
+  - 2025년 6월 3일 대선일까지 남은 시간을 실시간으로 표시
+  - 일, 시간, 분, 초 단위로 세부 표시
 
-A few resources to get you started if this is your first Flutter project:
+- **지지율 차트**
+  - FL Chart 라이브러리를 활용한 실시간 지지율 시각화
+  - 후보자별 색상 구분 및 호버 시 상세 수치 표시
+  - 반응형 레이아웃 지원
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **후보자 정보**
+  - Glass Morphism 디자인이 적용된 카드 UI
+  - 후보자별 프로필 이미지 및 소속 정당 정보
+  - 확장 가능한 공약 목록 (경제, 노동, 복지 등)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 기술 스택 💻
+
+- **프레임워크**: Flutter Web
+- **상태 관리**: Provider
+- **차트**: FL Chart
+- **디자인**: Material Design 3
+- **폰트**: Google Fonts (Noto Sans KR)
+- **아이콘**: Flutter SVG, Cupertino Icons
+
+## 라이선스 📄
+
+이 프로젝트는 MIT 라이선스 하에 공개되어 있습니다.
