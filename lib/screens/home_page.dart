@@ -256,9 +256,9 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 200,
+            height: 250,
             child: Padding(
-              padding: const EdgeInsets.only(right: 20),
+              padding: const EdgeInsets.only(right: 20, bottom: 20),
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
@@ -287,13 +287,15 @@ class _HomePageState extends State<HomePage> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        reservedSize: 40,
                         getTitlesWidget: (value, meta) {
                           const names = ['이재명', '김문수', '이준석', '권영국'];
                           return Padding(
-                            padding: const EdgeInsets.only(top: 5),
+                            padding: const EdgeInsets.only(top: 8),
                             child: Text(
                               names[value.toInt()],
                               style: AppTextStyles.subtitle(context),
+                              textAlign: TextAlign.center,
                             ),
                           );
                         },
