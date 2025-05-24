@@ -105,53 +105,85 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          _buildCandidateCard('이재명', '민주당'),
-          _buildCandidateCard('김문수', '국민의힘'),
-          _buildCandidateCard('이준석', '새로운미래'),
-          _buildCandidateCard('권영국', '진보당'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildCandidateCard('이재명', '민주당')),
+              const SizedBox(width: 10),
+              Expanded(child: _buildCandidateCard('김문수', '국민의힘')),
+              const SizedBox(width: 10),
+              Expanded(child: _buildCandidateCard('이준석', '새로운미래')),
+              const SizedBox(width: 10),
+              Expanded(child: _buildCandidateCard('권영국', '진보당')),
+            ],
+          ),
         ],
       ),
     );
   }
 
   Widget _buildCandidateCard(String name, String party) {
+    String getImageName() {
+      switch(name) {
+        case '이재명':
+          return 'candidate-1';
+        case '김문수':
+          return 'candidate-2';
+        case '이준석':
+          return 'candidate-4';
+        case '권영국':
+          return 'candidate-5';
+        default:
+          return '';
+      }
+    }
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  color: Colors.grey.shade300,
-                  child: const Center(child: Text('사진')),
+            Container(
+              width: double.infinity,
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage('assets/images/${getImageName()}.png'),
+                  fit: BoxFit.cover,
+                  onError: (exception, stackTrace) {},
                 ),
-                const SizedBox(width: 15),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      party,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              '주요 공약',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              child: Image.asset(
+                'assets/images/${getImageName()}.png',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  print('Error loading image: $error');
+                  return Container(
+                    color: Colors.grey.shade300,
+                    child: const Center(child: Text('사진 자리')),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 10),
+            Text(
+              name,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              party,
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '주요 공약',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
             _buildPolicyPoint('경제'),
             _buildPolicyPoint('교육'),
             _buildPolicyPoint('복지'),
