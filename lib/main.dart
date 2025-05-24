@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.notoSansKrTextTheme(),
       ),
+      debugShowCheckedModeBanner: false,
       home: const HomePage(),
     );
   }
