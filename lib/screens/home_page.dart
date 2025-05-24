@@ -132,20 +132,25 @@ class _HomePageState extends State<HomePage> {
         ),
         child: SingleChildScrollView(
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  _buildHeader(),
-                  const SizedBox(height: 20),
-                  _buildDDayCounter(),
-                  const SizedBox(height: 20),
-                  _buildSupportRateChart(),
-                  const SizedBox(height: 20),
-                  _buildCandidateComparison(),
-                  const SizedBox(height: 40),
-                ],
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      _buildHeader(),
+                      const SizedBox(height: 20),
+                      _buildDDayCounter(),
+                      const SizedBox(height: 20),
+                      _buildSupportRateChart(),
+                      const SizedBox(height: 20),
+                      _buildCandidateComparison(),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -408,19 +413,23 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 20),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              final candidates = ['이재명', '김문수', '이준석', '권영국'];
-              return _buildCandidateCard(candidates[index], '', index);
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: constraints.maxWidth > 600 ? 2 : 1,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  final candidates = ['이재명', '김문수', '이준석', '권영국'];
+                  return _buildCandidateCard(candidates[index], '', index);
+                },
+              );
             },
           ),
         ],
