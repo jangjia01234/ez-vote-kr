@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/text_styles.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -125,8 +126,8 @@ class _HomePageState extends State<HomePage> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.blue.shade50,
-              Colors.purple.shade50,
+              Colors.grey.shade50,
+              Colors.grey.shade100,
             ],
           ),
         ),
@@ -165,25 +166,12 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             '2025 대선',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              foreground: Paint()
-                ..shader = LinearGradient(
-                  colors: [
-                    Colors.blue.shade700,
-                    Colors.purple.shade700,
-                  ],
-                ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
-            ),
+            style: AppTextStyles.title(context),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             '밈으로 보는 대선 특집',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black54,
-            ),
+            style: AppTextStyles.subtitle(context),
           ),
         ],
       ),
@@ -206,13 +194,9 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 '2025년 대선까지',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+                style: AppTextStyles.title(context),
               ),
               const SizedBox(height: 20),
               Row(
@@ -238,10 +222,10 @@ class _HomePageState extends State<HomePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
+        color: Colors.grey.shade50.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.grey.shade200,
           width: 1,
         ),
       ),
@@ -249,19 +233,12 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             value.toString().padLeft(2, '0'),
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: AppTextStyles.title(context),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black.withOpacity(0.6),
-            ),
+            style: AppTextStyles.subtitle(context),
           ),
         ],
       ),
@@ -273,13 +250,9 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             '실시간 지지율',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: AppTextStyles.title(context),
           ),
           const SizedBox(height: 20),
           SizedBox(
@@ -293,15 +266,12 @@ class _HomePageState extends State<HomePage> {
                   barTouchData: BarTouchData(
                     enabled: true,
                     touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: Colors.white.withOpacity(0.8),
+                      tooltipBgColor: Colors.grey.shade50.withOpacity(0.9),
                       tooltipRoundedRadius: 8,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
                           '${rod.toY.toInt()}%',
-                          const TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          AppTextStyles.title(context),
                         );
                       },
                     ),
@@ -323,10 +293,7 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.only(top: 5),
                             child: Text(
                               names[value.toInt()],
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                              ),
+                              style: AppTextStyles.subtitle(context),
                             ),
                           );
                         },
@@ -343,10 +310,7 @@ class _HomePageState extends State<HomePage> {
                             space: 12,
                             child: Text(
                               '${value.toInt()}%',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.black54,
-                              ),
+                              style: AppTextStyles.subtitle(context),
                             ),
                           );
                         },
@@ -365,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                     horizontalInterval: 20,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(
-                        color: Colors.black12,
+                        color: Colors.grey.shade300,
                         strokeWidth: 1,
                       );
                     },
@@ -378,11 +342,8 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 10),
           Text(
             '출처: 한국갤럽 (2025.5.20~22)',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black.withOpacity(0.6),
-              fontStyle: FontStyle.italic,
-            ),
+            style: AppTextStyles.subtitle(context),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -401,7 +362,7 @@ class _HomePageState extends State<HomePage> {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             toY: 100,
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.grey.shade200,
           ),
         ),
       ],
@@ -412,13 +373,9 @@ class _HomePageState extends State<HomePage> {
     return GlassCard(
       child: Column(
         children: [
-          const Text(
+          Text(
             '후보자 공약 비교',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: AppTextStyles.title(context),
           ),
           const SizedBox(height: 20),
           LayoutBuilder(
@@ -541,16 +498,13 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
               Text(
                 name,
-                style: const TextStyle(
+                style: AppTextStyles.title(context).copyWith(
                   fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
                 ),
               ),
               Text(
                 getParty(name),
-                style: TextStyle(
-                  fontSize: 14,
+                style: AppTextStyles.subtitle(context).copyWith(
                   color: getPartyColor(name),
                   fontWeight: FontWeight.w500,
                 ),
@@ -564,8 +518,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Text(
                   getSlogan(),
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: AppTextStyles.subtitle(context).copyWith(
                     fontStyle: FontStyle.italic,
                     color: getPartyColor(name),
                   ),
@@ -582,13 +535,9 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     '이런 정책을 약속드립니다!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: AppTextStyles.title(context),
                   ),
                   const SizedBox(height: 10),
                   ...candidatesPolicies[name]!.entries.map((entry) {
@@ -608,10 +557,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Text(
                               entry.key,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                              style: AppTextStyles.subtitle(context).copyWith(
                                 color: getPartyColor(name),
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -626,18 +574,12 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Text(
                                   '✓ ',
-                                  style: TextStyle(
-                                    color: getPartyColor(name),
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: AppTextStyles.subtitle(context),
                                 ),
                                 Expanded(
                                   child: Text(
                                     policy,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black87,
-                                    ),
+                                    style: AppTextStyles.subtitle(context),
                                   ),
                                 ),
                               ],
