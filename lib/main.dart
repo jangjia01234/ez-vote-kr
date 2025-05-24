@@ -151,22 +151,20 @@ class _HomePageState extends State<HomePage> {
               height: 150,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage('assets/images/${getImageName()}.png'),
-                  fit: BoxFit.cover,
-                  onError: (exception, stackTrace) {},
-                ),
               ),
-              child: Image.asset(
-                'assets/images/${getImageName()}.png',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  print('Error loading image: $error');
-                  return Container(
-                    color: Colors.grey.shade300,
-                    child: const Center(child: Text('사진 자리')),
-                  );
-                },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'assets/images/${getImageName()}.png',
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    print('Error loading image: $error');
+                    return Container(
+                      color: Colors.grey.shade300,
+                      child: const Center(child: Text('사진 자리')),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10),
