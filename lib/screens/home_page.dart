@@ -563,11 +563,20 @@ class _HomePageState extends State<HomePage> {
         child: ExpansionTile(
           tilePadding: EdgeInsets.zero,
           initiallyExpanded: _expandedPanelIndices.contains(index),
-          trailing: Icon(
-            _expandedPanelIndices.contains(index) 
-              ? Icons.keyboard_arrow_up 
-              : Icons.keyboard_arrow_down,
-            color: getPartyColor(name),
+          controlAffinity: ListTileControlAffinity.trailing,
+          trailing: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: getPartyColor(name).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              _expandedPanelIndices.contains(index) 
+                ? Icons.expand_less 
+                : Icons.expand_more,
+              color: getPartyColor(name),
+              size: 24,
+            ),
           ),
           onExpansionChanged: (isExpanded) {
             setState(() {

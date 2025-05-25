@@ -19,6 +19,13 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
+        iconTheme: const IconThemeData(
+          size: 24,
+        ),
+        expansionTileTheme: const ExpansionTileThemeData(
+          iconColor: Colors.grey,
+          collapsedIconColor: Colors.grey,
+        ),
       ),
       home: const HomePage(),
     );
