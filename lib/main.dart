@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/home_page.dart';
+import 'package:flutter/foundation.dart';
+import 'screens/candidate_rooms_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,23 +12,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '2025 대선',
+      title: '2025 대선 후보 방 구경',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.grey,
+          seedColor: Colors.brown,
           brightness: Brightness.light,
         ),
         useMaterial3: true,
-        iconTheme: const IconThemeData(
-          size: 24,
+        fontFamily: 'Pretendard',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
         ),
-        expansionTileTheme: const ExpansionTileThemeData(
-          iconColor: Colors.grey,
-          collapsedIconColor: Colors.grey,
+        scrollbarTheme: const ScrollbarThemeData(
+          thumbVisibility: MaterialStatePropertyAll(false),
+          trackVisibility: MaterialStatePropertyAll(false),
         ),
       ),
-      home: const HomePage(),
+      home: const CandidateRoomsPage(),
     );
   }
 }
