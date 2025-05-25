@@ -10,50 +10,42 @@ class CandidateRoomDetail extends StatefulWidget {
 }
 
 class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF008080),
+      backgroundColor: const Color(0xFFE8DCC0), // 밝은 베이지색 배경으로 변경
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: widget.candidate['color'],
-            border: Border.all(color: Colors.black, width: 2),
+            color: Colors.black,
+            border: Border.all(color: widget.candidate['color'], width: 2),
           ),
           child: Text(
             '${widget.candidate['name']}의 방',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: widget.candidate['color'],
               fontWeight: FontWeight.bold,
               fontFamily: 'monospace',
-              fontSize: 16,
+              fontSize: 14,
             ),
           ),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
+        iconTheme: IconThemeData(
+          color: widget.candidate['color'],
           size: 24,
         ),
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: const Color(0xFFC0C0C0),
-            border: Border.all(color: Colors.black, width: 2),
+            color: Colors.black,
+            border: Border.all(color: widget.candidate['color'], width: 2),
           ),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            icon: Icon(Icons.arrow_back, color: widget.candidate['color']),
             onPressed: () => Navigator.of(context).pop(),
             padding: EdgeInsets.zero,
           ),
@@ -61,67 +53,22 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Container(
+            margin: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 3),
+            ),
             child: Stack(
               children: [
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFC0C0C0),
-                    border: Border.all(color: Colors.black, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 0,
-                        offset: const Offset(4, 4),
-                      ),
-                    ],
-                  ),
-                  child: Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFFE0E0E0),
-                          Color(0xFFA0A0A0),
-                        ],
-                        stops: [0.6, 0.6],
-                      ),
-                    ),
-                  ),
-                ),
-                Scrollbar(
-                  thumbVisibility: false,
-                  trackVisibility: false,
-                  controller: _scrollController,
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    physics: const BouncingScrollPhysics(),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height - 100,
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: _buildInteractiveObject(
-                              context,
-                              '👤',
-                              '후보 소개',
-                              '${widget.candidate['name']} 후보에 대해 알아보세요!',
-                              widget.candidate['color'],
-                            ),
-                          ),
-                          ..._buildPolicyObjects(context),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // 픽셀 아트 방 배경
+                _buildPixelRoom(),
+                // 후보자 캐릭터
+                _buildCandidateCharacter(),
+                // 인터랙티브 오브젝트들
+                ..._buildRoomObjects(),
+                // 대화창
+                _buildDialogBox(),
               ],
             ),
           ),
@@ -130,340 +77,568 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
-  List<Widget> _buildPolicyObjects(BuildContext context) {
-    final candidateId = widget.candidate['id'];
-    List<Map<String, dynamic>> objects = [];
-
-    switch (candidateId) {
-      case 'lee_jae_myung':
-        objects = [
-          {
-            'emoji': '💰',
-            'title': '기본소득 도입',
-            'description': '모든 국민에게 월 50만원씩! 💸\n일하든 안 하든 기본적인 생활비는 국가가 보장해드려요. 알바 뛰느라 고생하는 청년들, 육아로 힘든 부모님들 모두 숨통이 트일 거예요!',
-            'position': const Offset(30, 80),
-          },
-          {
-            'emoji': '🏘️',
-            'title': '공공주택 대량공급',
-            'description': '집값 때문에 고민? 이제 그만! 🏠\n공공주택 500만호를 지어서 집값을 확 낮춰드릴게요. 신혼부부는 반값에, 청년은 월세 걱정 없이 살 수 있어요!',
-            'position': const Offset(280, 100),
-          },
-          {
-            'emoji': '🎓',
-            'title': '대학등록금 반값',
-            'description': '대학 등록금이 너무 비싸죠? 😭\n국공립대는 무료, 사립대는 반값으로! 학자금 대출 때문에 20대부터 빚쟁이 되는 일은 이제 없어요. 공부에만 집중하세요!',
-            'position': const Offset(50, 300),
-          },
-          {
-            'emoji': '🌐',
-            'title': 'AI 국가전략',
-            'description': 'AI 시대, 한국이 선두에! 🤖\nChatGPT 같은 한국형 AI를 만들고, 모든 국민이 AI를 활용할 수 있도록 교육해드려요. 미래 일자리도 미리 준비!',
-            'position': const Offset(300, 280),
-          },
-          {
-            'emoji': '🌱',
-            'title': '탄소중립 2050',
-            'description': '지구를 구해요! 🌍\n재생에너지 100% 전환하고, 전기차 보급 확대! 환경 지키면서 새로운 일자리도 만들어요. 우리 아이들에게 깨끗한 지구를 물려줘야죠!',
-            'position': const Offset(20, 200),
-          },
-          {
-            'emoji': '👥',
-            'title': '노동시간 단축',
-            'description': '주 4일 근무제 도입! ⏰\n일과 삶의 균형을 맞춰드려요. 더 적게 일하고 더 행복하게! 야근 문화는 이제 옛날 얘기가 될 거예요.',
-            'position': const Offset(320, 200),
-          },
-        ];
-        break;
-
-      case 'kim_moon_soo':
-        objects = [
-          {
-            'emoji': '🏭',
-            'title': '제조업 르네상스',
-            'description': '대한민국 제조업 부활! 🔥\n반도체, 자동차, 조선업을 다시 세계 1위로! 좋은 일자리 많이 만들어서 청년들이 해외로 나가지 않아도 되게 할게요!',
-            'position': const Offset(30, 80),
-          },
-          {
-            'emoji': '🏠',
-            'title': '내 집 마련 지원',
-            'description': '집은 투기 대상이 아니라 보금자리! 🏡\n무주택자 대출 한도 늘리고, 신혼부부 특별공급 확대! 열심히 일하면 내 집 마련할 수 있는 세상을 만들어요!',
-            'position': const Offset(280, 100),
-          },
-          {
-            'emoji': '🎯',
-            'title': '교육 정상화',
-            'description': '공부 잘하는 아이가 대접받는 세상! 📚\n영재교육 확대하고, 실력 있는 선생님들 우대해요. 경쟁도 필요해요. 실력으로 승부하는 공정한 사회!',
-            'position': const Offset(50, 300),
-          },
-          {
-            'emoji': '🚀',
-            'title': '우주항공 강국',
-            'description': '한국도 우주로! 🌌\n누리호 성공은 시작일 뿐! 우주산업 육성해서 새로운 먹거리 만들고, 우주 강국 코리아의 꿈을 현실로 만들어요!',
-            'position': const Offset(300, 280),
-          },
-          {
-            'emoji': '⚡',
-            'title': '원전 확대',
-            'description': '안전한 원전으로 에너지 독립! ⚛️\n원전 기술은 우리가 세계 최고예요. 탄소 없는 깨끗한 에너지로 전기료도 낮추고 환경도 지켜요!',
-            'position': const Offset(20, 200),
-          },
-          {
-            'emoji': '🛡️',
-            'title': '강한 국방',
-            'description': '평화는 힘으로 지켜요! 💪\n첨단 무기 개발하고 국방력 강화! 북한 도발에 확실히 대응하면서 평화로운 한반도를 만들어요!',
-            'position': const Offset(320, 200),
-          },
-        ];
-        break;
-
-      case 'lee_jun_seok':
-        objects = [
-          {
-            'emoji': '💻',
-            'title': '디지털 정부 혁신',
-            'description': '정부 업무 100% 디지털화! 📱\n민원 처리 5분 컷, 각종 서류 스마트폰으로 끝! 공무원들도 AI 도우미와 함께 일해요. 번거로운 행정은 안녕~',
-            'position': const Offset(30, 80),
-          },
-          {
-            'emoji': '🏢',
-            'title': '스타트업 천국',
-            'description': '청년 창업가들 모여라! 🚀\n창업 자금 지원 확대하고, 실패해도 재도전할 수 있는 환경 조성! 한국을 아시아의 실리콘밸리로 만들어요!',
-            'position': const Offset(280, 100),
-          },
-          {
-            'emoji': '🎮',
-            'title': '게임산업 육성',
-            'description': '게임도 문화예요! 🎯\ne스포츠 국가대표 지원하고, 게임 개발자 양성! 셧다운제 폐지해서 게임산업이 마음껏 성장할 수 있게 해요!',
-            'position': const Offset(50, 300),
-          },
-          {
-            'emoji': '🌐',
-            'title': '메타버스 플랫폼',
-            'description': '가상세계에서 만나요! 🥽\n한국형 메타버스 플랫폼 구축해서 새로운 경제 생태계 만들어요. 가상현실에서도 돈 벌 수 있는 시대!',
-            'position': const Offset(300, 280),
-          },
-          {
-            'emoji': '♻️',
-            'title': '순환경제 구축',
-            'description': '버리는 것도 자원이에요! 🔄\n플라스틱 재활용 100%, 음식물 쓰레기 제로! 환경도 지키고 새로운 비즈니스 모델도 만들어요!',
-            'position': const Offset(20, 200),
-          },
-          {
-            'emoji': '⚖️',
-            'title': '공정한 기회',
-            'description': '실력으로 평가받는 세상! 🎯\n학벌, 지역, 성별 차별 없이 능력으로만 승부! 공정한 경쟁 환경에서 누구나 성공할 수 있어요!',
-            'position': const Offset(320, 200),
-          },
-        ];
-        break;
-
-      case 'kwon_young_guk':
-        objects = [
-          {
-            'emoji': '🏥',
-            'title': '무상의료 실현',
-            'description': '병원비 걱정 없는 세상! 💊\n모든 의료비 국가가 부담해요. 감기부터 암 치료까지 무료! 돈 때문에 치료 포기하는 일은 절대 없어요!',
-            'position': const Offset(30, 80),
-          },
-          {
-            'emoji': '🏠',
-            'title': '주택 공공화',
-            'description': '집은 상품이 아니라 권리! 🏡\n모든 주택을 공공이 관리해서 집값 폭등 원천 차단! 누구나 적정한 가격에 살 수 있는 집을 보장해요!',
-            'position': const Offset(280, 100),
-          },
-          {
-            'emoji': '🎓',
-            'title': '교육 완전무상',
-            'description': '유치원부터 대학까지 무료! 📚\n교육비 때문에 꿈을 포기하는 일은 없어요. 모든 아이들이 평등하게 교육받을 권리를 보장해드려요!',
-            'position': const Offset(50, 300),
-          },
-          {
-            'emoji': '🌍',
-            'title': '기후정의 실현',
-            'description': '기후변화는 계급 문제! 🌡️\n부자들이 만든 환경 문제를 서민이 떠안으면 안 돼요. 대기업 규제 강화하고 친환경 전환 비용은 기업이 부담!',
-            'position': const Offset(300, 280),
-          },
-          {
-            'emoji': '⚡',
-            'title': '에너지 공공화',
-            'description': '전기, 가스도 공공재! 💡\n에너지 기업 국유화해서 요금 인하! 재생에너지 100% 전환으로 깨끗하고 저렴한 에너지를 모든 국민에게!',
-            'position': const Offset(20, 200),
-          },
-          {
-            'emoji': '👷',
-            'title': '노동자 권익 보장',
-            'description': '노동자가 주인인 세상! ✊\n최저임금 대폭 인상하고, 노조 활동 보장! 비정규직 차별 금지하고 모든 노동자가 인간답게 살 수 있어요!',
-            'position': const Offset(320, 200),
-          },
-        ];
-        break;
-
-      default:
-        objects = [];
-    }
-
-    return objects.map((obj) {
-      final position = obj['position'] as Offset;
-      return Positioned(
-        left: position.dx,
-        top: position.dy,
-        child: _buildInteractiveObject(
-          context,
-          obj['emoji'] as String,
-          obj['title'] as String,
-          obj['description'] as String,
-          widget.candidate['color'],
-        ),
-      );
-    }).toList();
+  Widget _buildPixelRoom() {
+    return Container(
+      width: double.infinity,
+      height: 600, // 높이를 다시 600으로 설정
+      child: Stack(
+        children: [
+          // 배경 이미지
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/room_background.png',
+              fit: BoxFit.cover, // 이미지를 더 크게 보이도록 cover로 변경
+              errorBuilder: (context, error, stackTrace) {
+                // 이미지 로드 실패시 기본 배경
+                return Stack(
+                  children: [
+                    // 방 배경 (회색 벽)
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFB0B0B0),
+                      ),
+                    ),
+                    // 바닥
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 100,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF8B7355), // 나무 바닥색
+                        ),
+                        child: CustomPaint(
+                          painter: FloorPatternPainter(),
+                        ),
+                      ),
+                    ),
+                    // 벽 패턴
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: WallPatternPainter(),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          // 천장 조명 (배경 이미지 위에 오버레이) - 위치 조정
+          _buildCeilingLight(),
+          // 창문 (배경 이미지 위에 오버레이) - 위치 조정
+          _buildWindow(),
+        ],
+      ),
+    );
   }
 
-  Widget _buildInteractiveObject(
-    BuildContext context,
-    String emoji,
-    String title,
-    String description,
-    Color color,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        _showPolicyModal(context, title, description, color);
-      },
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: const Color(0xFFC0C0C0),
-          border: Border.all(color: Colors.black, width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.5),
-              blurRadius: 0,
-              offset: const Offset(2, 2),
+  Widget _buildCeilingLight() {
+    return Positioned(
+      top: 50,
+      left: 350, // 중앙으로 조정
+      child: Column(
+        children: [
+          // 조명 고리
+          Container(
+            width: 60,
+            height: 8,
+            decoration: BoxDecoration(
+              color: const Color(0xFF404040),
+              borderRadius: BorderRadius.circular(4),
             ),
-          ],
+          ),
+          const SizedBox(height: 4),
+          // 조명
+          Container(
+            width: 80,
+            height: 80,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFFF8DC),
+              shape: BoxShape.circle,
+            ),
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                color: Color(0xFFFFFFE0),
+                shape: BoxShape.circle,
+              ),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFFFF0),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWindow() {
+    return Positioned(
+      top: 80,
+      right: 50,
+      child: Container(
+        width: 120,
+        height: 100,
+        decoration: BoxDecoration(
+          color: const Color(0xFF404040),
+          border: Border.all(color: Colors.black, width: 2),
         ),
         child: Container(
           margin: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: const Color(0xFF808080), width: 1),
-          ),
-          child: Center(
-            child: Text(
-              emoji,
-              style: const TextStyle(fontSize: 20),
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF87CEEB),
+                    border: Border.all(color: const Color(0xFF404040), width: 1),
+                  ),
+                ),
+              ),
+              Container(width: 2, color: const Color(0xFF404040)),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF87CEEB),
+                    border: Border.all(color: const Color(0xFF404040), width: 1),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void _showPolicyModal(BuildContext context, String title, String description, Color color) {
+  Widget _buildCandidateCharacter() {
+    return Positioned(
+      bottom: 120, // 위치 조정
+      left: 100,   // 위치 조정
+      child: Column(
+        children: [
+          // 후보자 이름
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              border: Border.all(color: widget.candidate['color'], width: 2),
+            ),
+            child: Text(
+              widget.candidate['name'],
+              style: TextStyle(
+                color: widget.candidate['color'],
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // 픽셀 아트 캐릭터
+          _buildPixelCharacter(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPixelCharacter() {
+    final candidateId = widget.candidate['id'];
+    
+    // 각 후보별 아바타 이미지 매칭
+    String avatarPath;
+    switch (candidateId) {
+      case 'lee_jae_myung':
+        avatarPath = 'assets/images/avatar_1.png';
+        break;
+      case 'kim_moon_soo':
+        avatarPath = 'assets/images/avatar_2.png';
+        break;
+      case 'lee_jun_seok':
+        avatarPath = 'assets/images/avatar_4.png';
+        break;
+      case 'kwon_young_guk':
+        avatarPath = 'assets/images/avatar_5.png';
+        break;
+      default:
+        avatarPath = 'assets/images/avatar_1.png';
+    }
+
+    return Container(
+      width: 120,
+      height: 120,
+      child: Image.asset(
+        avatarPath,
+        fit: BoxFit.contain, // 이미지 전체가 보이도록 변경
+        errorBuilder: (context, error, stackTrace) {
+          // 이미지 로드 실패시 기본 픽셀 캐릭터 표시
+          return _buildDefaultCharacter();
+        },
+      ),
+    );
+  }
+
+  Widget _buildDefaultCharacter() {
+    return Container(
+      width: 64,
+      height: 96,
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      child: const Center(
+        child: Text('?', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  List<Widget> _buildRoomObjects() {
+    return [
+      // 책장
+      _buildBookshelf(),
+      // 소파
+      _buildSofa(),
+      // 책상
+      _buildDesk(),
+      // 화분
+      _buildPlant(),
+    ];
+  }
+
+  Widget _buildBookshelf() {
+    return Positioned(
+      left: 50,
+      top: 150,
+      child: GestureDetector(
+        onTap: () => _showPolicyDialog('정책 자료실', '${widget.candidate['name']} 후보의 상세 정책을 확인해보세요!'),
+        child: Container(
+          width: 80,
+          height: 120,
+          decoration: BoxDecoration(
+            color: const Color(0xFF8B4513),
+            border: Border.all(color: Colors.black, width: 2),
+          ),
+          child: Column(
+            children: [
+              Container(height: 2, color: const Color(0xFF654321)),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(width: 2, color: const Color(0xFF654321)),
+                    Expanded(
+                      child: Container(
+                        color: const Color(0xFFFFFFE0),
+                        child: Column(
+                          children: List.generate(6, (index) => 
+                            Container(
+                              height: 18,
+                              margin: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: [
+                                  const Color(0xFFFF6B6B),
+                                  const Color(0xFF4ECDC4),
+                                  const Color(0xFF45B7D1),
+                                  const Color(0xFF96CEB4),
+                                  const Color(0xFFFECA57),
+                                  const Color(0xFFFF9FF3),
+                                ][index],
+                                border: Border.all(color: Colors.black, width: 1),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(width: 2, color: const Color(0xFF654321)),
+                  ],
+                ),
+              ),
+              Container(height: 2, color: const Color(0xFF654321)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSofa() {
+    return Positioned(
+      left: 300,
+      bottom: 150,
+      child: GestureDetector(
+        onTap: () => _showPolicyDialog('편안한 대화', '${widget.candidate['name']} 후보와 편안하게 대화해보세요!'),
+        child: Container(
+          width: 120,
+          height: 60,
+          child: Stack(
+            children: [
+              // 소파 등받이
+              Container(
+                width: 120,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4A90E2),
+                  border: Border.all(color: Colors.black, width: 2),
+                ),
+              ),
+              // 소파 쿠션
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: 120,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF357ABD),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                ),
+              ),
+              // 소파 팔걸이
+              Positioned(
+                left: 0,
+                child: Container(
+                  width: 15,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E5984),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                child: Container(
+                  width: 15,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E5984),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesk() {
+    return Positioned(
+      right: 50,
+      bottom: 200,
+      child: GestureDetector(
+        onTap: () => _showPolicyDialog('업무 자료', '${widget.candidate['name']} 후보의 업무 계획을 살펴보세요!'),
+        child: Container(
+          width: 100,
+          height: 80,
+          child: Stack(
+            children: [
+              // 책상 상판
+              Container(
+                width: 100,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF8B4513),
+                  border: Border.all(color: Colors.black, width: 2),
+                ),
+              ),
+              // 책상 다리
+              Positioned(
+                top: 15,
+                child: Container(
+                  width: 100,
+                  height: 65,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF654321),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(width: 8, color: const Color(0xFF4A2C17)),
+                      Expanded(child: Container()),
+                      Container(width: 8, color: const Color(0xFF4A2C17)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlant() {
+    return Positioned(
+      right: 200,
+      top: 200,
+      child: GestureDetector(
+        onTap: () => _showPolicyDialog('환경 정책', '${widget.candidate['name']} 후보의 환경 정책을 확인해보세요!'),
+        child: Container(
+          width: 40,
+          height: 80,
+          child: Column(
+            children: [
+              // 식물 잎
+              Container(
+                width: 40,
+                height: 50,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF4CAF50),
+                  shape: BoxShape.circle,
+                ),
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF66BB6A),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              // 화분
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF8D6E63),
+                  border: Border.all(color: Colors.black, width: 2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogBox() {
+    return Positioned(
+      bottom: 20,
+      left: 20,
+      right: 20,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          border: Border.all(color: widget.candidate['color'], width: 3),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '안녕하세요, ${widget.candidate['name']}입니다!',
+              style: TextStyle(
+                color: widget.candidate['color'],
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '방 안의 오브젝트들을 클릭해서\n제 정책과 비전을 확인해보세요!',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'monospace',
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showPolicyDialog(String title, String description) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 400,
-              maxHeight: 300,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              border: Border.all(color: widget.candidate['color'], width: 3),
             ),
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFC0C0C0),
-                border: Border.all(color: Colors.black, width: 3),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 0,
-                    offset: const Offset(4, 4),
-                  ),
-                ],
+                color: const Color(0xFF2C2C2C),
+                border: Border.all(color: widget.candidate['color'], width: 1),
               ),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xFF808080), width: 1),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: color,
-                        border: Border.all(color: Colors.black, width: 2),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: widget.candidate['color'],
+                      border: Border.all(color: Colors.black, width: 2),
+                    ),
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontFamily: 'monospace',
                       ),
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: widget.candidate['color'], width: 1),
+                    ),
+                    child: Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                        color: Colors.white,
+                        fontFamily: 'monospace',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: widget.candidate['color'],
+                      border: Border.all(color: Colors.black, width: 2),
+                    ),
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        shape: const RoundedRectangleBorder(),
+                      ),
+                      child: const Text(
+                        '닫기',
+                        style: TextStyle(
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
                           fontFamily: 'monospace',
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF0F0F0),
-                          border: Border.all(color: const Color(0xFF808080), width: 1),
-                        ),
-                        child: Text(
-                          description,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            height: 1.5,
-                            color: Colors.black,
-                            fontFamily: 'monospace',
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFC0C0C0),
-                        border: Border.all(color: Colors.black, width: 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 0,
-                            offset: const Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      child: TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          shape: const RoundedRectangleBorder(),
-                        ),
-                        child: const Text(
-                          '닫기',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'monospace',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -472,3 +647,47 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 }
+
+class FloorPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint1 = Paint()..color = const Color(0xFF6B4E3D);
+    final paint2 = Paint()..color = const Color(0xFF8B7355);
+    
+    // 나무 바닥 패턴
+    for (int i = 0; i < size.width; i += 20) {
+      canvas.drawRect(
+        Rect.fromLTWH(i.toDouble(), 0, 18, size.height),
+        i % 40 == 0 ? paint1 : paint2,
+      );
+      // 나무 결 표현
+      canvas.drawLine(
+        Offset(i.toDouble() + 18, 0),
+        Offset(i.toDouble() + 18, size.height),
+        Paint()..color = Colors.black..strokeWidth = 1,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class WallPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = const Color(0xFF909090);
+    
+    // 벽 텍스처
+    for (int i = 0; i < size.width; i += 4) {
+      for (int j = 0; j < size.height - 100; j += 4) {
+        if ((i + j) % 8 == 0) {
+          canvas.drawRect(Rect.fromLTWH(i.toDouble(), j.toDouble(), 2, 2), paint);
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+} 
