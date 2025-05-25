@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/text_styles.dart';
+import 'package:flutter/foundation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -586,22 +587,80 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      'assets/images/${getImageName()}.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.black.withOpacity(0.05),
-                          child: Center(
-                            child: Icon(
-                              Icons.person,
-                              size: 50,
-                              color: getPartyColor(name).withOpacity(0.3),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    child: kIsWeb 
+                      ? Image.network(
+                          '/assets/images/${getImageName()}.png',
+                          fit: BoxFit.contain,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            print('웹 이미지 로딩 에러: /assets/images/${getImageName()}.png - $error');
+                            return Image.asset(
+                              'assets/images/${getImageName()}.png',
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                              height: double.infinity,
+                              errorBuilder: (context, error2, stackTrace2) {
+                                print('Asset 이미지 로딩 에러: assets/images/${getImageName()}.png - $error2');
+                                return Container(
+                                  color: Colors.black.withOpacity(0.05),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: getPartyColor(name).withOpacity(0.3),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          '이미지 로딩 실패',
+                                          style: TextStyle(
+                                            color: getPartyColor(name).withOpacity(0.5),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/images/${getImageName()}.png',
+                          fit: BoxFit.contain,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            print('이미지 로딩 에러: assets/images/${getImageName()}.png - $error');
+                            return Container(
+                              color: Colors.black.withOpacity(0.05),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      size: 50,
+                                      color: getPartyColor(name).withOpacity(0.3),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '이미지 로딩 중...',
+                                      style: TextStyle(
+                                        color: getPartyColor(name).withOpacity(0.5),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                   ),
                 ),
               ),
