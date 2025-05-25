@@ -16,73 +16,181 @@ class _HomePageState extends State<HomePage> {
   Set<int> _expandedPanelIndices = {};
 
   // 후보자별 공약 데이터
-  final Map<String, Map<String, List<String>>> candidatesPolicies = {
+  final Map<String, Map<String, List<Map<String, String>>>> candidatesPolicies = {
     '이재명': {
-      '경제': [
-        'AI 산업에 100조원 투자, 모두의 AI 프로젝트 추진',
-        'K-콘텐츠 국가 지원 확대',
-        'K-방위산업 육성을 통한 성장 동력 확보'
+      '💰 경제정책': [
+        {
+          'title': 'AI 산업에 100조원 투자, 모두의 AI 프로젝트 추진',
+          'description': 'AI 회사들한테 100조원 투자해서 일자리 만들기'
+        },
+        {
+          'title': 'K-콘텐츠 국가 지원 확대',
+          'description': 'K-POP, 드라마 같은 한류 콘텐츠 더 많이 지원하기'
+        },
+        {
+          'title': 'K-방위산업 육성을 통한 성장 동력 확보',
+          'description': '무기 만드는 회사들 키워서 수출하기'
+        }
       ],
-      '노동': [
-        '주 4.5일제 도입, 장기적으로 주 4일제 추진',
-        '노란봉투법 제정',
-        '포괄임금제 금지'
+      '⏰ 노동정책': [
+        {
+          'title': '주 4.5일제 도입, 장기적으로 주 4일제 추진',
+          'description': '주 4.5일만 일하기 (금요일 반차!), 나중에는 주 4일만'
+        },
+        {
+          'title': '노란봉투법 제정',
+          'description': '노동자들이 파업해도 손해배상 안 물어도 되게 하기'
+        },
+        {
+          'title': '포괄임금제 금지',
+          'description': '야근 강요하면 처벌받게 하기'
+        }
       ],
-      '복지': [
-        '공공의대 설립 및 공공병원 확충',
-        '간병비 건강보험 적용',
-        '지역사회 통합 돌봄체계 구축'
+      '🏥 복지정책': [
+        {
+          'title': '공공의대 설립 및 공공병원 확충',
+          'description': '의대 더 만들어서 의사 늘리기'
+        },
+        {
+          'title': '간병비 건강보험 적용',
+          'description': '간병비도 건강보험으로 지원하기'
+        },
+        {
+          'title': '지역사회 통합 돌봄체계 구축',
+          'description': '동네에서 돌봄 서비스 받을 수 있게 하기'
+        }
       ]
     },
     '김문수': {
-      '경제': [
-        '법인세·상속세 최고세율 인하',
-        '기업 규제 완화 및 투자 기업 세제혜택 확대',
-        'AI 청년 인재 20만명 양성'
+      '💰 경제정책': [
+        {
+          'title': '법인세·상속세 최고세율 인하',
+          'description': '회사들 세금 깎아줘서 투자 더 하게 만들기'
+        },
+        {
+          'title': '기업 규제 완화 및 투자 기업 세제혜택 확대',
+          'description': '기업 규제 줄여서 사업하기 쉽게 만들기'
+        },
+        {
+          'title': 'AI 청년 인재 20만명 양성',
+          'description': 'AI 전문가 20만명 키우기'
+        }
       ],
-      '노동': [
-        '주 52시간 근무제 유연화',
-        '기업 자율 주 4.5일제 도입',
-        '5인 미만 사업장 근로기준법 단계적 적용'
+      '⏰ 노동정책': [
+        {
+          'title': '주 52시간 근무제 유연화',
+          'description': '주 52시간 근무를 좀 더 유연하게 조정하기'
+        },
+        {
+          'title': '기업 자율 주 4.5일제 도입',
+          'description': '회사가 알아서 주 4.5일제 할 수 있게 하기'
+        },
+        {
+          'title': '5인 미만 사업장 근로기준법 단계적 적용',
+          'description': '직원 5명 미만 작은 회사는 근로기준법 천천히 적용하기'
+        }
       ],
-      '복지': [
-        '3·3·3 청년주택 매년 10만호 공급',
-        '치매 국가책임제 도입',
-        '장애 가족 돌봄 지원 확대'
+      '🏠 주거·복지정책': [
+        {
+          'title': '3·3·3 청년주택 매년 10만호 공급',
+          'description': '청년들한테 3억원짜리 집을 3천만원 계약금으로 살 수 있게 하기'
+        },
+        {
+          'title': '치매 국가책임제 도입',
+          'description': '치매 치료비 국가에서 다 내주기'
+        },
+        {
+          'title': '장애 가족 돌봄 지원 확대',
+          'description': '장애인 가족 돌봄 지원 늘리기'
+        }
       ]
     },
     '이준석': {
-      '경제': [
-        'AI 글로벌 3대 강국 육성',
-        '디지털 경제 전환 가속화',
-        '벤처기업 육성'
+      '💻 디지털정책': [
+        {
+          'title': 'AI 글로벌 3대 강국 육성',
+          'description': 'AI 분야에서 세계 3등 안에 들기'
+        },
+        {
+          'title': '디지털 경제 전환 가속화',
+          'description': '모든 걸 디지털로 바꿔서 편하게 만들기'
+        },
+        {
+          'title': '벤처기업 육성',
+          'description': '스타트업 회사들 더 많이 지원하기'
+        }
       ],
-      '교육': [
-        '코딩 교육 의무화',
-        '온라인 교육 플랫폼 구축',
-        '산학협력 강화'
+      '📚 교육정책': [
+        {
+          'title': '코딩 교육 의무화',
+          'description': '학교에서 코딩 필수로 가르치기'
+        },
+        {
+          'title': '온라인 교육 플랫폼 구축',
+          'description': '온라인으로 공부할 수 있는 시스템 만들기'
+        },
+        {
+          'title': '산학협력 강화',
+          'description': '대학교랑 회사가 함께 교육하기'
+        }
       ],
-      '복지': [
-        '청년 기본소득 도입',
-        '신혼부부 주거지원 확대',
-        '디지털 복지 서비스 확대'
+      '💸 청년정책': [
+        {
+          'title': '청년 기본소득 도입',
+          'description': '청년들한테 매달 용돈 주기 (기본소득)'
+        },
+        {
+          'title': '신혼부부 주거지원 확대',
+          'description': '신혼부부 집 구하는 거 도와주기'
+        },
+        {
+          'title': '디지털 복지 서비스 확대',
+          'description': '복지 신청을 앱으로 쉽게 할 수 있게 하기'
+        }
       ]
     },
     '권영국': {
-      '경제': [
-        '전 국민 기본소득 도입',
-        '대기업 지배구조 개선',
-        '공공부문 일자리 확대'
+      '💰 기본소득정책': [
+        {
+          'title': '전 국민 기본소득 도입',
+          'description': '모든 국민한테 매달 생활비 지원하기'
+        },
+        {
+          'title': '대기업 지배구조 개선',
+          'description': '대기업들이 너무 독점하지 못하게 규제하기'
+        },
+        {
+          'title': '공공부문 일자리 확대',
+          'description': '공무원 일자리 더 많이 만들기'
+        }
       ],
-      '노동': [
-        '주 32시간 근무제 법제화',
-        '노동자 권익 보호 강화',
-        '특수고용직 노동자 보호'
+      '⏰ 노동정책': [
+        {
+          'title': '주 32시간 근무제 법제화',
+          'description': '주 32시간만 일하기 (하루 6시간 정도)'
+        },
+        {
+          'title': '노동자 권익 보호 강화',
+          'description': '노동자들 권리 더 강하게 보호하기'
+        },
+        {
+          'title': '특수고용직 노동자 보호',
+          'description': '배달기사, 대리기사도 정식 직원처럼 대우하기'
+        }
       ],
-      '복지': [
-        '무상의료 실현',
-        '국공립 어린이집 확충',
-        '교육 공공성 강화'
+      '🆓 무상복지정책': [
+        {
+          'title': '무상의료 실현',
+          'description': '병원비 완전 무료로 만들기'
+        },
+        {
+          'title': '국공립 어린이집 확충',
+          'description': '국공립 어린이집 더 많이 만들기'
+        },
+        {
+          'title': '교육 공공성 강화',
+          'description': '사교육비 안 내도 되게 공교육 강화하기'
+        }
       ]
     }
   };
@@ -258,7 +366,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 250,
             child: Padding(
-              padding: const EdgeInsets.only(right: 20, bottom: 20),
+              padding: const EdgeInsets.only(right: 40, bottom: 20),
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
@@ -304,7 +412,7 @@ class _HomePageState extends State<HomePage> {
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 55,
+                        reservedSize: 90,
                         interval: 20,
                         getTitlesWidget: (value, meta) {
                           return SideTitleWidget(
@@ -433,13 +541,13 @@ class _HomePageState extends State<HomePage> {
     String getSlogan() {
       switch(name) {
         case '이재명':
-          return '"AI로 더 나은 미래, 일하는 시간은 줄이고 삶의 질은 높이고"';
+          return '"AI 시대 준비하고, 주 4일만 일하고, 병원비 걱정 없는 나라 만들기!"';
         case '김문수':
-          return '"청년이 일하기 좋은 나라, 기업하기 좋은 대한민국"';
+          return '"회사 키우고, 청년들 집 사고, 치매 걱정 없는 든든한 나라!"';
         case '이준석':
-          return '"디지털 시대의 젊은 리더십, 청년의 미래를 책임지다"';
+          return '"코딩 배우고, 용돈 받고, 앱으로 뚝딱 해결하는 디지털 세상!"';
         case '권영국':
-          return '"노동이 존중받고 국민이 행복한 정의로운 대한민국"';
+          return '"모든 국민 용돈 받고, 하루 6시간만 일하고, 병원비 무료!"';
         default:
           return '';
       }
@@ -569,19 +677,39 @@ class _HomePageState extends State<HomePage> {
                           ...entry.value.map((policy) => Padding(
                             padding: const EdgeInsets.only(
                               left: 16.0,
-                              bottom: 8.0,
+                              bottom: 12.0,
                             ),
-                            child: Row(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '✓ ',
-                                  style: AppTextStyles.subtitle(context),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '✓ ',
+                                      style: AppTextStyles.subtitle(context).copyWith(
+                                        color: getPartyColor(name),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        policy['title']!,
+                                        style: AppTextStyles.subtitle(context).copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Expanded(
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, top: 4.0),
                                   child: Text(
-                                    policy,
-                                    style: AppTextStyles.subtitle(context),
+                                    '→ ${policy['description']!}',
+                                    style: AppTextStyles.subtitle(context).copyWith(
+                                      color: Colors.grey[600],
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
                               ],

@@ -81,9 +81,9 @@
     },
     {
       "name": "flutter_lints",
-      "rootUri": "file:///Users/jangjia01234/.pub-cache/hosted/pub.dev/flutter_lints-3.0.2",
+      "rootUri": "file:///Users/jangjia01234/.pub-cache/hosted/pub.dev/flutter_lints-2.0.3",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "2.19"
     },
     {
       "name": "flutter_svg",
@@ -141,7 +141,7 @@
     },
     {
       "name": "lints",
-      "rootUri": "file:///Users/jangjia01234/.pub-cache/hosted/pub.dev/lints-3.0.0",
+      "rootUri": "file:///Users/jangjia01234/.pub-cache/hosted/pub.dev/lints-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -341,10 +341,10 @@
       "name": "politics_web_flutter",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-05-24T16:05:31.023058Z",
+  "generated": "2025-05-25T03:48:32.151089Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///opt/homebrew/Caskroom/flutter/3.29.2/flutter",
