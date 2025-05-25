@@ -563,6 +563,12 @@ class _HomePageState extends State<HomePage> {
         child: ExpansionTile(
           tilePadding: EdgeInsets.zero,
           initiallyExpanded: _expandedPanelIndices.contains(index),
+          trailing: Icon(
+            _expandedPanelIndices.contains(index) 
+              ? Icons.keyboard_arrow_up 
+              : Icons.keyboard_arrow_down,
+            color: getPartyColor(name),
+          ),
           onExpansionChanged: (isExpanded) {
             setState(() {
               if (isExpanded) {
