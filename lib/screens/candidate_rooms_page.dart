@@ -11,7 +11,7 @@ class CandidateRoomsPage extends StatefulWidget {
 }
 
 class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
-  final DateTime electionDay = DateTime(2025, 6, 3);
+  final DateTime electionDay = DateTime(2025, 6, 3); // 2025년 6월 3일 선거일
   final ScrollController _scrollController = ScrollController();
 
   final List<Map<String, dynamic>> candidates = const [
@@ -126,10 +126,13 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
     return StreamBuilder(
       stream: Stream.periodic(const Duration(seconds: 1)),
       builder: (context, snapshot) {
-        final now = DateTime.now();
-        final difference = electionDay.difference(now);
+        // 한국 시간 기준으로 계산 (UTC+9)
+        final now = DateTime.now().toUtc().add(const Duration(hours: 9));
+        final kstElectionDay = DateTime(2025, 6, 3).toUtc().add(const Duration(hours: 9));
+        final difference = kstElectionDay.difference(now);
         
-        final days = difference.inDays;
+        // 더 정확한 D-Day 계산 (시간 단위까지 고려)
+        final days = (difference.inHours / 24).ceil();
 
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
