@@ -134,13 +134,37 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
                     // 배경 이미지 (페이드인)
                     Opacity(
                       opacity: _fadeAnimation.value,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/angelcat_background.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      child: Image.asset(
+                        'assets/images/angelcat_background.png',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          print('천사 고양이 배경 이미지 로드 실패: $error');
+                          return Container(
+                            color: const Color(0xFF1E3A8A),
+                            child: const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image_not_supported,
+                                    size: 64,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    '꿈속 세계 배경을 불러올 수 없습니다',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     // UI 요소들
