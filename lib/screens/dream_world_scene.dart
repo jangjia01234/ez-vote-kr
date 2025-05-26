@@ -10,12 +10,16 @@ class DreamWorldScene extends StatefulWidget {
   State<DreamWorldScene> createState() => _DreamWorldSceneState();
 }
 
-class _DreamWorldSceneState extends State<DreamWorldScene> {
+class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderStateMixin {
   int currentDialogue = 0;
   bool showCandidateButtons = false;
   Set<String> visitedCandidates = {};
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
 
   final List<String> angelCatDialogues = [
+    "💭 \"어..? 여긴 어디지?\"",
+    "😵 \"꿈속인가? 뭔가 이상한 느낌이...\"",
     "😇 \"안녕하세요! 저는 천사 고양이예요~\"",
     "✨ \"여기는 꿈속 세계입니다. 각 후보들의 방을 구경해보세요!\"",
     "🏠 \"후보들의 방을 둘러보고 그들을 알아가보세요.\"",
@@ -48,6 +52,31 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
       'color': const Color(0xFFEAB308),
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeIn,
+    ));
+    
+    // 페이드인 애니메이션 시작
+    _fadeController.forward();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
+  }
 
   void nextDialogue() {
     if (currentDialogue < angelCatDialogues.length - 1) {
@@ -97,13 +126,27 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
           child: Container(
             width: 390,
             height: 844,
-            decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/angelcat_background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Stack(
+            child: AnimatedBuilder(
+              animation: _fadeAnimation,
+              builder: (context, child) {
+                return Stack(
+                  children: [
+                    // 배경 이미지 (페이드인)
+                    Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/angelcat_background.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // UI 요소들
+                    Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: Stack(
             children: [
               // BGM 플레이어 (좌상단)
               Positioned(
@@ -116,7 +159,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
                     return Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.white, width: 2),
                       ),
                       child: IconButton(
                         onPressed: BGMService.toggleBGM,
@@ -267,7 +310,12 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
                     ),
                   ),
                 ),
-            ],
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
         ),
