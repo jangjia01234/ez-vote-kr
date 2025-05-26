@@ -108,6 +108,16 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
       'candidate_party': candidate['party'],
     });
     
+    // Google Analytics 맞춤 이벤트
+    AnalyticsService.trackCustomEvent('candidate_room_visit',
+      category: 'political_engagement',
+      label: '${candidate['name']}_${candidate['party']}',
+      customParameters: {
+        'candidate_id': candidate['id'],
+        'visit_order': visitedCandidates.length + 1,
+      },
+    );
+    
     Navigator.push(
       context,
       PageRouteBuilder(
