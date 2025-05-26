@@ -76,7 +76,8 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
-        fontFamily: 'Pretendard',
+        // 시스템 monospace 폰트 사용으로 로딩 시간 제거
+        fontFamily: 'monospace',
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
