@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/bgm_service.dart';
 import '../services/analytics_service.dart';
+import '../services/image_preloader.dart';
 
 class CandidateRoomDetail extends StatefulWidget {
   final Map<String, dynamic> candidate;
@@ -14,12 +15,34 @@ class CandidateRoomDetail extends StatefulWidget {
 
 class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   final DateTime electionDay = DateTime(2025, 6, 3); // 2025년 6월 3일 선거일
+  bool _roomImagesLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    _preloadRoomImages();
     // 후보 방 상세 화면 방문 추적
     AnalyticsService.trackPageView('candidate_room_${widget.candidate['id']}');
+  }
+
+  Future<void> _preloadRoomImages() async {
+    // 해당 후보의 이미지들이 이미 로드되었는지 확인
+    final candidateImages = ImagePreloader.getCandidateImages(widget.candidate['id']);
+    final allLoaded = candidateImages.every((path) => ImagePreloader.isImageLoaded(path));
+    
+    if (allLoaded) {
+      setState(() {
+        _roomImagesLoaded = true;
+      });
+    } else {
+      // 아직 로드되지 않은 이미지들 프리로드
+      await ImagePreloader.preloadCandidateImages(context, widget.candidate['id']);
+      if (mounted) {
+        setState(() {
+          _roomImagesLoaded = true;
+        });
+      }
+    }
   }
 
   @override
@@ -45,14 +68,47 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                   height: mobileHeight,
                   child: Stack(
                     children: [
-                      // 픽셀 아트 방 배경
-                      _buildPixelRoom(),
-                      // 후보자 캐릭터
-                      _buildCandidateCharacter(mobileWidth, mobileHeight),
-                      // 인터랙티브 오브젝트들
-                      ..._buildRoomObjects(mobileWidth, mobileHeight),
-                      // 대화창
-                      _buildDialogBox(),
+                      // 로딩 중이면 검은 배경, 완료되면 페이드인
+                      AnimatedOpacity(
+                        opacity: _roomImagesLoaded ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 500),
+                        child: Stack(
+                          children: [
+                            // 픽셀 아트 방 배경
+                            _buildPixelRoom(),
+                            // 후보자 캐릭터
+                            _buildCandidateCharacter(mobileWidth, mobileHeight),
+                            // 인터랙티브 오브젝트들
+                            ..._buildRoomObjects(mobileWidth, mobileHeight),
+                            // 대화창
+                            _buildDialogBox(),
+                          ],
+                        ),
+                      ),
+                      // 로딩 중 표시
+                      if (!_roomImagesLoaded)
+                        Container(
+                          color: Colors.black,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  color: widget.candidate['color'],
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  '${widget.candidate['name']}의 방 준비 중...',
+                                  style: TextStyle(
+                                    color: widget.candidate['color'],
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

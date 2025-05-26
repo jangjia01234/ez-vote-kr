@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'livingroom_scene.dart';
 import '../services/analytics_service.dart';
+import '../services/image_preloader.dart';
 
 class TitleScreen extends StatefulWidget {
   const TitleScreen({super.key});
@@ -11,6 +12,7 @@ class TitleScreen extends StatefulWidget {
 
 class _TitleScreenState extends State<TitleScreen> {
   bool _imagesLoaded = false;
+  double _loadingProgress = 0.0;
 
   @override
   void initState() {
@@ -21,11 +23,36 @@ class _TitleScreenState extends State<TitleScreen> {
   }
 
   Future<void> _loadImages() async {
-    // 이미지 프리로딩 제거하고 바로 로드 완료로 설정
-    if (mounted) {
-      setState(() {
-        _imagesLoaded = true;
+    try {
+      // 프리로딩 진행률 업데이트
+      final progressTimer = Stream.periodic(const Duration(milliseconds: 100), (i) {
+        return ImagePreloader.getLoadingProgress();
+      }).listen((progress) {
+        if (mounted) {
+          setState(() {
+            _loadingProgress = progress;
+          });
+        }
       });
+      
+      // 모든 이미지 프리로드
+      await ImagePreloader.preloadAllImages(context);
+      
+      progressTimer.cancel();
+      
+      if (mounted) {
+        setState(() {
+          _imagesLoaded = true;
+          _loadingProgress = 1.0;
+        });
+      }
+    } catch (e) {
+      print('이미지 로딩 오류: $e');
+      if (mounted) {
+        setState(() {
+          _imagesLoaded = true; // 오류가 있어도 게임 진행 허용
+        });
+      }
     }
   }
 
@@ -103,13 +130,53 @@ class _TitleScreenState extends State<TitleScreen> {
                           elevation: 0,
                           side: const BorderSide(color: Colors.black, width: 3),
                         ),
-                        child: Text(
-                          _imagesLoaded ? '시작하기' : '로딩 중...',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: _imagesLoaded 
+                          ? const Text(
+                              '시작하기',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '이미지 로딩 중...',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: 120,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                  child: FractionallySizedBox(
+                                    alignment: Alignment.centerLeft,
+                                    widthFactor: _loadingProgress,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${(_loadingProgress * 100).toInt()}%',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
                       ),
                     ),
                   ],
