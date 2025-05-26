@@ -130,58 +130,30 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
         final difference = electionDay.difference(now);
         
         final days = difference.inDays;
-        final hours = difference.inHours % 24;
-        final minutes = difference.inMinutes % 60;
-        final seconds = difference.inSeconds % 60;
 
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFF8B4513).withOpacity(0.9),
-            borderRadius: BorderRadius.circular(6),
+            color: Colors.red.withOpacity(0.9),
             border: Border.all(color: Colors.white, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    '⏰ D-',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                  Text(
-                    '$days',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+              const Text(
+                '선거일까지',
+                style: TextStyle(
                   color: Colors.white,
-                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'D-$days',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -199,7 +171,7 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
         return Container(
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.7),
-            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: Colors.white, width: 2),
           ),
           child: IconButton(
             onPressed: BGMService.toggleBGM,
@@ -228,9 +200,9 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
           Positioned.fill(
             child: Image.asset(
               'assets/images/main_background.png',
-              fit: BoxFit.cover, // 이미지가 컨테이너를 완전히 채우도록
+              fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                // 이미지 로드 실패시 간단한 에러 메시지
+                print('이미지 로드 실패: $error');
                 return Container(
                   color: const Color(0xFFE8DCC0),
                   child: const Center(

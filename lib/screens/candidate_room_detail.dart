@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/bgm_service.dart';
-import '../utils/image_helper.dart';
 
 class CandidateRoomDetail extends StatefulWidget {
   final Map<String, dynamic> candidate;
@@ -140,43 +139,46 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         children: [
           // 배경 이미지
           Positioned.fill(
-            child: ImageHelper.buildAssetImage(
+            child: Image.asset(
               backgroundPath,
               fit: BoxFit.cover,
-              errorWidget: Container(
-                color: const Color(0xFFE8DCC0),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.image_not_supported,
-                        size: 64,
-                        color: widget.candidate['color'],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        '배경 이미지를 불러올 수 없습니다',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+              errorBuilder: (context, error, stackTrace) {
+                print('이미지 로드 실패: $error');
+                return Container(
+                  color: const Color(0xFFE8DCC0),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image_not_supported,
+                          size: 64,
                           color: widget.candidate['color'],
-                          fontFamily: 'monospace',
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '($backgroundPath)',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontFamily: 'monospace',
+                        const SizedBox(height: 16),
+                        Text(
+                          '배경 이미지를 불러올 수 없습니다',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: widget.candidate['color'],
+                            fontFamily: 'monospace',
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          '($backgroundPath)',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -240,12 +242,15 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     return Container(
       width: 120,
       height: 120,
-      child: ImageHelper.buildAssetImage(
+      child: Image.asset(
         avatarPath,
         fit: BoxFit.contain,
         width: 120,
         height: 120,
-        errorWidget: _buildDefaultCharacter(),
+        errorBuilder: (context, error, stackTrace) {
+          print('이미지 로드 실패: $error');
+          return _buildDefaultCharacter();
+        },
       ),
     );
   }
@@ -475,6 +480,226 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               '• 디지털 시대 법체계 정비\n'
               '• 규제 합리화 추진\n'
               '• 국민 편의 법무서비스',
+        ),
+      ];
+    }
+    
+    // 이준석 후보의 경우 실제 이미지 오브젝트 사용
+    if (widget.candidate['id'] == 'lee_jun_seok') {
+      return [
+        // 테이블 (정치개혁)
+        _buildImageObject(
+          'assets/images/candidate_4/room_table.png',
+          left: screenWidth * 0.05,
+          top: screenHeight * 0.18,
+          width: screenWidth * 0.30,
+          height: screenWidth * 0.25,
+          title: '🏛️ 정치개혁',
+          description: '정치의 새로운 패러다임을 제시!\n\n'
+              '🗳️ 선거제도 혁신\n'
+              '• 온라인 투표 시스템 도입\n'
+              '• 청년 정치 참여 확대\n'
+              '• 정당 공천제 개혁\n\n'
+              '💰 정치자금 투명화\n'
+              '• 실시간 정치자금 공개\n'
+              '• 후원금 한도 상향 조정\n'
+              '• 크라우드펀딩 활성화\n\n'
+              '📱 디지털 민주주의\n'
+              '• 시민 참여 플랫폼 구축\n'
+              '• AI 기반 정책 분석\n'
+              '• 블록체인 투표 시스템\n\n'
+              '⚖️ 국정감사 개혁\n'
+              '• 상시 감시 체계 구축\n'
+              '• 시민 감시단 운영\n'
+              '• 투명한 정부 운영',
+        ),
+        // 플라스크 (과학기술)
+        _buildImageObject(
+          'assets/images/candidate_4/room_plask.png',
+          right: screenWidth * 0.05,
+          top: screenHeight * 0.20,
+          width: screenWidth * 0.25,
+          height: screenWidth * 0.28,
+          title: '🧪 과학기술',
+          description: '과학기술로 미래를 선도!\n\n'
+              '🚀 우주항공 산업\n'
+              '• 한국형 발사체 개발\n'
+              '• 달 탐사 프로젝트\n'
+              '• 우주산업 클러스터 조성\n\n'
+              '🔬 R&D 투자 확대\n'
+              '• GDP 대비 5% R&D 투자\n'
+              '• 기초과학 연구 지원\n'
+              '• 산학연 협력 강화\n\n'
+              '💊 바이오헬스 육성\n'
+              '• K-바이오 글로벌화\n'
+              '• 정밀의료 기술 개발\n'
+              '• 신약 개발 지원\n\n'
+              '🤖 4차 산업혁명\n'
+              '• 로봇산업 육성\n'
+              '• 스마트팩토리 확산\n'
+              '• 양자컴퓨팅 연구',
+        ),
+        // 서류 (교육개혁)
+        _buildImageObject(
+          'assets/images/candidate_4/room_document.png',
+          left: screenWidth * 0.15,
+          bottom: screenHeight * 0.30,
+          width: screenWidth * 0.28,
+          height: screenWidth * 0.22,
+          title: '📚 교육개혁',
+          description: '미래형 교육 시스템 구축!\n\n'
+              '🎓 대학 입시 개혁\n'
+              '• 학종 비중 확대\n'
+              '• 수능 절대평가 전환\n'
+              '• 고교학점제 정착\n\n'
+              '💻 디지털 교육\n'
+              '• 에듀테크 활용 확대\n'
+              '• AI 맞춤형 학습\n'
+              '• 온라인 교육 인프라\n\n'
+              '🌍 글로벌 인재 양성\n'
+              '• 해외 교환학생 확대\n'
+              '• 다국어 교육 강화\n'
+              '• 국제학교 설립\n\n'
+              '🎨 창의교육 강화\n'
+              '• 예술교육 의무화\n'
+              '• 창업교육 확대\n'
+              '• 융합교육 활성화',
+        ),
+        // 책 (청년정책)
+        _buildImageObject(
+          'assets/images/candidate_4/room_book.png',
+          right: screenWidth * 0.15,
+          bottom: screenHeight * 0.25,
+          width: screenWidth * 0.22,
+          height: screenWidth * 0.25,
+          title: '👨‍💼 청년정책',
+          description: '청년이 희망을 가질 수 있는 사회!\n\n'
+              '🏠 청년 주거 지원\n'
+              '• 청년 전용 임대주택\n'
+              '• 주거비 지원 확대\n'
+              '• 셰어하우스 활성화\n\n'
+              '💼 일자리 창출\n'
+              '• 청년 창업 지원\n'
+              '• 디지털 일자리 확대\n'
+              '• 해외 취업 지원\n\n'
+              '💰 경제적 지원\n'
+              '• 청년 기본소득 도입\n'
+              '• 학자금 대출 이자 면제\n'
+              '• 청년 적금 지원\n\n'
+              '🎯 역량 개발\n'
+              '• 직업훈련 프로그램\n'
+              '• 멘토링 시스템\n'
+              '• 해외 연수 기회',
+        ),
+      ];
+    }
+    
+    // 권영국 후보의 경우 실제 이미지 오브젝트 사용
+    if (widget.candidate['id'] == 'kwon_young_guk') {
+      return [
+        // 저울 (사회정의)
+        _buildImageObject(
+          'assets/images/candidate_5/room_scale.png',
+          left: screenWidth * 0.08,
+          top: screenHeight * 0.22,
+          width: screenWidth * 0.28,
+          height: screenWidth * 0.25,
+          title: '⚖️ 사회정의',
+          description: '공정하고 평등한 사회 실현!\n\n'
+              '🏛️ 사법 정의\n'
+              '• 사법부 완전 독립\n'
+              '• 시민배심제 확대\n'
+              '• 공익변호사 확충\n\n'
+              '💰 경제 정의\n'
+              '• 재벌 개혁 단행\n'
+              '• 최고임금제 도입\n'
+              '• 상속세 강화\n\n'
+              '👥 사회적 약자 보호\n'
+              '• 차별금지법 제정\n'
+              '• 장애인 권익 보장\n'
+              '• 이주민 인권 보호\n\n'
+              '🔍 권력 견제\n'
+              '• 언론 독립성 보장\n'
+              '• 시민사회 활성화\n'
+              '• 부패척결 강화',
+        ),
+        // 식물 (환경정책)
+        _buildImageObject(
+          'assets/images/candidate_5/room_plant.png',
+          right: screenWidth * 0.08,
+          top: screenHeight * 0.18,
+          width: screenWidth * 0.25,
+          height: screenWidth * 0.30,
+          title: '🌱 환경정책',
+          description: '지속가능한 녹색 사회 건설!\n\n'
+              '🌍 탄소중립 실현\n'
+              '• 2040년 탄소중립 달성\n'
+              '• 재생에너지 80% 전환\n'
+              '• 탄소세 전면 도입\n\n'
+              '🚗 친환경 교통\n'
+              '• 전기차 의무화\n'
+              '• 대중교통 무료화\n'
+              '• 자전거 도로 확충\n\n'
+              '🏭 산업 전환\n'
+              '• 그린뉴딜 확대\n'
+              '• 화석연료 퇴출\n'
+              '• 순환경제 구축\n\n'
+              '🌳 생태계 보전\n'
+              '• 국립공원 확대\n'
+              '• 생물다양성 보호\n'
+              '• 도시 숲 조성',
+        ),
+        // 헬멧 (노동정책)
+        _buildImageObject(
+          'assets/images/candidate_5/room_helmet.png',
+          left: screenWidth * 0.15,
+          bottom: screenHeight * 0.32,
+          width: screenWidth * 0.22,
+          height: screenWidth * 0.20,
+          title: '👷 노동정책',
+          description: '노동자의 권익을 최우선으로!\n\n'
+              '⏰ 노동시간 단축\n'
+              '• 주 4일제 도입\n'
+              '• 초과근무 엄격 제한\n'
+              '• 휴식권 보장\n\n'
+              '💰 임금 인상\n'
+              '• 최저임금 대폭 인상\n'
+              '• 생활임금제 도입\n'
+              '• 임금격차 해소\n\n'
+              '🛡️ 노동안전 강화\n'
+              '• 중대재해처벌법 강화\n'
+              '• 안전관리자 의무 배치\n'
+              '• 위험작업 금지\n\n'
+              '🤝 노동조합 권리\n'
+              '• 단결권 완전 보장\n'
+              '• 단체교섭권 확대\n'
+              '• 파업권 인정',
+        ),
+        // 담요 (복지정책)
+        _buildImageObject(
+          'assets/images/candidate_5/room_blanket.png',
+          right: screenWidth * 0.15,
+          bottom: screenHeight * 0.22,
+          width: screenWidth * 0.25,
+          height: screenWidth * 0.20,
+          title: '🏥 복지정책',
+          description: '모든 국민의 기본권 보장!\n\n'
+              '🏥 의료 공공성\n'
+              '• 의료 완전 무료화\n'
+              '• 공공병원 확충\n'
+              '• 의료진 처우 개선\n\n'
+              '👶 보육 지원\n'
+              '• 무상보육 확대\n'
+              '• 국공립 어린이집 확충\n'
+              '• 육아휴직 확대\n\n'
+              '👴 노인 복지\n'
+              '• 기초연금 대폭 인상\n'
+              '• 요양서비스 확대\n'
+              '• 노인 일자리 창출\n\n'
+              '🏠 주거 복지\n'
+              '• 공공임대주택 확대\n'
+              '• 주거급여 현실화\n'
+              '• 전월세 상한제',
         ),
       ];
     }
@@ -724,39 +949,42 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
             cursor: SystemMouseCursors.click,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              child: ImageHelper.buildAssetImage(
+              child: Image.asset(
                 imagePath,
                 fit: BoxFit.contain,
                 width: width,
                 height: height,
-                errorWidget: Container(
-                  decoration: BoxDecoration(
-                    color: widget.candidate['color'].withOpacity(0.3),
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image_not_supported,
-                          color: widget.candidate['color'],
-                          size: 24,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '이미지 로드 실패',
-                          style: TextStyle(
-                            fontSize: 8,
-                            color: widget.candidate['color'],
-                            fontFamily: 'monospace',
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                errorBuilder: (context, error, stackTrace) {
+                  print('이미지 로드 실패: $error');
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: widget.candidate['color'].withOpacity(0.3),
+                      border: Border.all(color: Colors.black, width: 2),
                     ),
-                  ),
-                ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_not_supported,
+                            color: widget.candidate['color'],
+                            size: 24,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '이미지 로드 실패',
+                            style: TextStyle(
+                              fontSize: 8,
+                              color: widget.candidate['color'],
+                              fontFamily: 'monospace',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -813,22 +1041,12 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         final difference = electionDay.difference(now);
         
         final days = difference.inDays;
-        final hours = difference.inHours % 24;
-        final minutes = difference.inMinutes % 60;
-        final seconds = difference.inSeconds % 60;
 
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFF8B4513).withOpacity(0.9),
+            color: Colors.red.withOpacity(0.9),
             border: Border.all(color: Colors.white, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -836,42 +1054,17 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               const Text(
                 '선거일까지',
                 style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.normal,
                   color: Colors.white,
-                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    '⏰ D-',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                  Text(
-                    '$days',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                ],
-              ),
               Text(
-                '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                'D-$days',
                 style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
                   color: Colors.white,
-                  fontFamily: 'monospace',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

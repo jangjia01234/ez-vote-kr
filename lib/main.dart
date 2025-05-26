@@ -17,8 +17,10 @@ void main() async {
 // 이미지 미리 로드 함수
 Future<void> precacheImages(BuildContext context) async {
   final List<String> imagePaths = [
+    'assets/images/intro_background.png',
     'assets/images/livingroom_background.png',
     'assets/images/angelcat_background.png',
+    'assets/images/main_background.png',
     'assets/images/candidate_1/room_background_1_empty.png',
     'assets/images/candidate_1/avatar_1.png',
     'assets/images/candidate_1/room_computer.png',
@@ -33,17 +35,30 @@ Future<void> precacheImages(BuildContext context) async {
     'assets/images/candidate_2/room_lawbook.png',
     'assets/images/candidate_4/room_background_4_empty.png',
     'assets/images/candidate_4/avatar_4.png',
+    'assets/images/candidate_4/room_table.png',
+    'assets/images/candidate_4/room_plask.png',
+    'assets/images/candidate_4/room_document.png',
+    'assets/images/candidate_4/room_book.png',
     'assets/images/candidate_5/room_background_5_empty.png',
     'assets/images/candidate_5/avatar_5.png',
+    'assets/images/candidate_5/room_scale.png',
+    'assets/images/candidate_5/room_plant.png',
+    'assets/images/candidate_5/room_helmet.png',
+    'assets/images/candidate_5/room_blanket.png',
   ];
 
+  print('이미지 미리 로드 시작: ${imagePaths.length}개 파일');
+  
   for (String imagePath in imagePaths) {
     try {
       await precacheImage(AssetImage(imagePath), context);
+      print('✓ 이미지 미리 로드 성공: $imagePath');
     } catch (e) {
-      print('이미지 미리 로드 실패: $imagePath - $e');
+      print('✗ 이미지 미리 로드 실패: $imagePath - $e');
     }
   }
+  
+  print('이미지 미리 로드 완료');
 }
 
 class MyApp extends StatelessWidget {
@@ -52,7 +67,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '2025 대선 후보 방 구경',
+      title: '2025 대선 시뮬레이터',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

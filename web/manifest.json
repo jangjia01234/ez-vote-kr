@@ -1,11 +1,11 @@
 {
-    "name": "politics_web_flutter",
-    "short_name": "politics_web_flutter",
+    "name": "2025 대선 시뮬레이터",
+    "short_name": "대선 시뮬레이터",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#000000",
+    "theme_color": "#FF0000",
+    "description": "2025 대선, 시뮬레이션 게임으로 후보들의 공약을 만나보자!",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

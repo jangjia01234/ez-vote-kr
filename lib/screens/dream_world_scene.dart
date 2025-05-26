@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'candidate_room_detail.dart';
 import 'ending_scene.dart';
 import '../services/bgm_service.dart';
-import '../utils/image_helper.dart';
 
 class DreamWorldScene extends StatefulWidget {
   const DreamWorldScene({super.key});
@@ -135,34 +134,37 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
                     // 배경 이미지 (페이드인)
                     Opacity(
                       opacity: _fadeAnimation.value,
-                      child: ImageHelper.buildAssetImage(
+                      child: Image.asset(
                         'assets/images/angelcat_background.png',
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
-                        errorWidget: Container(
-                          color: const Color(0xFF1E3A8A),
-                          child: const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.image_not_supported,
-                                  size: 64,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  '꿈속 세계 배경을 불러올 수 없습니다',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                        errorBuilder: (context, error, stackTrace) {
+                          print('이미지 로드 실패: $error');
+                          return Container(
+                            color: const Color(0xFF1E3A8A),
+                            child: const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image_not_supported,
+                                    size: 64,
                                     color: Colors.white,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 16),
+                                  Text(
+                                    '꿈속 세계 배경을 불러올 수 없습니다',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ),
                     // UI 요소들
