@@ -819,9 +819,9 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      decoration: BoxDecoration(
-              color: const Color(0xFF8B4513).withOpacity(0.9),
-              border: Border.all(color: Colors.white, width: 2),
+          decoration: BoxDecoration(
+            color: const Color(0xFF8B4513).withOpacity(0.9),
+            border: Border.all(color: Colors.white, width: 2),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
@@ -833,6 +833,15 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const Text(
+                '선거일까지',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white,
+                  fontFamily: 'monospace',
+                ),
+              ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

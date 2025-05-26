@@ -105,18 +105,31 @@ class _EndingSceneState extends State<EndingScene> {
                     final days = difference.inDays;
                     
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                                              decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.9),
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                      child: Text(
-                        'D-$days',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.9),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            '선거일까지',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Text(
+                            'D-$days',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
