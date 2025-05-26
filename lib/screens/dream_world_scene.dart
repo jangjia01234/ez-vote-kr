@@ -46,7 +46,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
       'color': const Color(0xFFF97316),
     },
     {
-      'id': 'kwon_young_gook',
+      'id': 'kwon_young_guk',
       'name': '권영국',
       'party': '진보당',
       'color': const Color(0xFFEAB308),
