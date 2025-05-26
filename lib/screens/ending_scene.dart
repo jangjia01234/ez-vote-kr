@@ -39,7 +39,11 @@ class _EndingSceneState extends State<EndingScene> {
   void restartGame() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const TitleScreen()),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const TitleScreen(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
       (route) => false,
     );
   }
@@ -47,6 +51,7 @@ class _EndingSceneState extends State<EndingScene> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: GestureDetector(
           onTap: showButtons ? null : nextDialogue,

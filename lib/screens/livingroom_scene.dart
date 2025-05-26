@@ -37,12 +37,8 @@ class _LivingroomSceneState extends State<LivingroomScene> {
       Future.delayed(const Duration(milliseconds: 800), () {
         Navigator.pushReplacement(
           context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => const DreamWorldScene(),
-            transitionDuration: const Duration(milliseconds: 600),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
+          MaterialPageRoute(
+            builder: (context) => const DreamWorldScene(),
           ),
         );
       });
@@ -52,6 +48,7 @@ class _LivingroomSceneState extends State<LivingroomScene> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: GestureDetector(
           onTap: nextDialogue,

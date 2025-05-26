@@ -26,7 +26,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8DCC0), // 밝은 베이지색 배경으로 변경
+      backgroundColor: Colors.black,
       body: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {

@@ -68,8 +68,10 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
     
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => CandidateRoomDetail(candidate: candidate),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => CandidateRoomDetail(candidate: candidate),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
       ),
     );
   }
@@ -77,8 +79,10 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
   void goToEnding() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (context) => const EndingScene(),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const EndingScene(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
       ),
     );
   }
@@ -86,6 +90,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: GestureDetector(
           onTap: showCandidateButtons ? null : nextDialogue,
