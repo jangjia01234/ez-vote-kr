@@ -1,8 +1,40 @@
 import 'package:flutter/material.dart';
 import 'livingroom_scene.dart';
+import '../main.dart';
 
-class TitleScreen extends StatelessWidget {
+class TitleScreen extends StatefulWidget {
   const TitleScreen({super.key});
+
+  @override
+  State<TitleScreen> createState() => _TitleScreenState();
+}
+
+class _TitleScreenState extends State<TitleScreen> {
+  bool _imagesLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
+  Future<void> _loadImages() async {
+    try {
+      await precacheImages(context);
+      if (mounted) {
+        setState(() {
+          _imagesLoaded = true;
+        });
+      }
+    } catch (e) {
+      print('이미지 로드 중 오류: $e');
+      if (mounted) {
+        setState(() {
+          _imagesLoaded = true; // 오류가 있어도 계속 진행
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,16 +96,16 @@ class TitleScreen extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.only(bottom: 100),
                       child: ElevatedButton(
-                                            onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) => const LivingroomScene(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-                    },
+                        onPressed: _imagesLoaded ? () {
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => const LivingroomScene(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
+                        } : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFEF4444),
                           foregroundColor: Colors.white,
@@ -84,9 +116,9 @@ class TitleScreen extends StatelessWidget {
                           elevation: 0,
                           side: const BorderSide(color: Colors.black, width: 3),
                         ),
-                        child: const Text(
-                          '시작하기',
-                          style: TextStyle(
+                        child: Text(
+                          _imagesLoaded ? '시작하기' : '로딩 중...',
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dream_world_scene.dart';
 import '../services/bgm_service.dart';
+import '../utils/image_helper.dart';
 
 class LivingroomScene extends StatefulWidget {
   const LivingroomScene({super.key});
@@ -59,38 +60,35 @@ class _LivingroomSceneState extends State<LivingroomScene> {
               children: [
                 // 배경 이미지
                 Positioned.fill(
-                  child: Image.asset(
+                  child: ImageHelper.buildAssetImage(
                     'assets/images/livingroom_background.png',
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      print('거실 배경 이미지 로드 실패: $error');
-                      return Container(
-                        color: const Color(0xFF2C1810),
-                        child: const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.image_not_supported,
-                                size: 64,
+                    errorWidget: Container(
+                      color: const Color(0xFF2C1810),
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image_not_supported,
+                              size: 64,
+                              color: Colors.white,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              '거실 배경을 불러올 수 없습니다',
+                              style: TextStyle(
+                                fontSize: 16,
                                 color: Colors.white,
                               ),
-                              SizedBox(height: 16),
-                              Text(
-                                '거실 배경을 불러올 수 없습니다',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 ),
-                // UI 요소들
+                
                 // BGM 플레이어 (좌상단)
                 Positioned(
                   top: 50,
@@ -199,8 +197,7 @@ class _LivingroomSceneState extends State<LivingroomScene> {
                       color: Colors.black,
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
           ),
         ),

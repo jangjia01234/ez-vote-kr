@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/bgm_service.dart';
+import '../utils/image_helper.dart';
 
 class CandidateRoomDetail extends StatefulWidget {
   final Map<String, dynamic> candidate;
@@ -139,46 +140,43 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         children: [
           // 배경 이미지
           Positioned.fill(
-            child: Image.asset(
+            child: ImageHelper.buildAssetImage(
               backgroundPath,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                // 이미지 로드 실패시 간단한 에러 메시지
-                return Container(
-                  color: const Color(0xFFE8DCC0),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image_not_supported,
-                          size: 64,
+              errorWidget: Container(
+                color: const Color(0xFFE8DCC0),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.image_not_supported,
+                        size: 64,
+                        color: widget.candidate['color'],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        '배경 이미지를 불러올 수 없습니다',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                           color: widget.candidate['color'],
+                          fontFamily: 'monospace',
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          '배경 이미지를 불러올 수 없습니다',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: widget.candidate['color'],
-                            fontFamily: 'monospace',
-                          ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '($backgroundPath)',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontFamily: 'monospace',
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '($backgroundPath)',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontFamily: 'monospace',
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
         ],
@@ -242,13 +240,12 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     return Container(
       width: 120,
       height: 120,
-      child: Image.asset(
+      child: ImageHelper.buildAssetImage(
         avatarPath,
-        fit: BoxFit.contain, // 이미지 전체가 보이도록 변경
-        errorBuilder: (context, error, stackTrace) {
-          // 이미지 로드 실패시 기본 픽셀 캐릭터 표시
-          return _buildDefaultCharacter();
-        },
+        fit: BoxFit.contain,
+        width: 120,
+        height: 120,
+        errorWidget: _buildDefaultCharacter(),
       ),
     );
   }
@@ -368,6 +365,116 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               '• 노동3권 헌법 명시\n'
               '• 환경권·알권리 신설\n'
               '• 지방자치 분권 강화',
+        ),
+      ];
+    }
+    
+    // 김문수 후보의 경우 실제 이미지 오브젝트 사용
+    if (widget.candidate['id'] == 'kim_moon_soo') {
+      return [
+        // 기차 (교통·인프라)
+        _buildImageObject(
+          'assets/images/candidate_2/room_train.png',
+          left: screenWidth * 0.08,
+          top: screenHeight * 0.20,
+          width: screenWidth * 0.35,
+          height: screenWidth * 0.25,
+          title: '🚄 교통·인프라',
+          description: '전국을 하나로 연결하는 교통망!\n\n'
+              '🚅 고속철도 확충\n'
+              '• KTX 노선 전국 확대\n'
+              '• 수도권-지방 2시간대 연결\n'
+              '• 고속철도 건설비 국가 지원\n\n'
+              '🛣️ 도로망 현대화\n'
+              '• 스마트 고속도로 구축\n'
+              '• 자율주행 인프라 확대\n'
+              '• 교통체증 해소 프로젝트\n\n'
+              '✈️ 항공·해운 발전\n'
+              '• 지방공항 활성화 지원\n'
+              '• 부산항 동북아 허브화\n'
+              '• 드론 택배 상용화 추진\n\n'
+              '🌉 SOC 투자 확대\n'
+              '• 노후 인프라 전면 개선\n'
+              '• 지역균형발전 교통망\n'
+              '• 친환경 교통수단 보급',
+        ),
+        // 돈통 (경제·세제)
+        _buildImageObject(
+          'assets/images/candidate_2/room_moneybox.png',
+          right: screenWidth * 0.08,
+          top: screenHeight * 0.18,
+          width: screenWidth * 0.28,
+          height: screenWidth * 0.30,
+          title: '💰 경제·세제',
+          description: '서민을 위한 경제정책!\n\n'
+              '💸 세금 부담 완화\n'
+              '• 소득세 구간 조정\n'
+              '• 중산층 세부담 경감\n'
+              '• 자영업자 세제 혜택 확대\n\n'
+              '🏪 소상공인 지원\n'
+              '• 임대료 안정화 정책\n'
+              '• 카드수수료 인하\n'
+              '• 소상공인 대출 금리 지원\n\n'
+              '💼 일자리 창출\n'
+              '• 청년 취업 지원 확대\n'
+              '• 중소기업 고용 장려금\n'
+              '• 신산업 분야 인력 양성\n\n'
+              '📈 경제 활성화\n'
+              '• 규제 완화로 투자 유치\n'
+              '• 벤처기업 육성 지원\n'
+              '• 수출 중소기업 지원 강화',
+        ),
+        // 군모 (안보·국방)
+        _buildImageObject(
+          'assets/images/candidate_2/room_militarycap.png',
+          left: screenWidth * 0.15,
+          bottom: screenHeight * 0.30,
+          width: screenWidth * 0.25,
+          height: screenWidth * 0.22,
+          title: '🪖 안보·국방',
+          description: '튼튼한 안보로 평화 수호!\n\n'
+              '🛡️ 국방력 강화\n'
+              '• 첨단 무기체계 도입\n'
+              '• 한미동맹 더욱 공고화\n'
+              '• 국방 R&D 투자 확대\n\n'
+              '👨‍💼 병역제도 개선\n'
+              '• 복무환경 현대화\n'
+              '• 장병 처우 개선\n'
+              '• 전문기술 병과 확대\n\n'
+              '🌏 평화외교 추진\n'
+              '• 한반도 평화 정착\n'
+              '• 국제 평화유지 기여\n'
+              '• 다자안보 협력 강화\n\n'
+              '🚨 국가위기 대응\n'
+              '• 재난대응 체계 강화\n'
+              '• 사이버 보안 역량 확충\n'
+              '• 국가정보 보호 강화',
+        ),
+        // 법전 (법무·정의)
+        _buildImageObject(
+          'assets/images/candidate_2/room_lawbook.png',
+          right: screenWidth * 0.15,
+          bottom: screenHeight * 0.20,
+          width: screenWidth * 0.22,
+          height: screenWidth * 0.28,
+          title: '⚖️ 법무·정의',
+          description: '공정하고 투명한 사회 구현!\n\n'
+              '🏛️ 사법개혁 추진\n'
+              '• 검찰 권한 분산\n'
+              '• 사법부 독립성 강화\n'
+              '• 국민참여재판 확대\n\n'
+              '🔍 부패척결 강화\n'
+              '• 고위공직자범죄수사처 정상화\n'
+              '• 공직자 재산공개 확대\n'
+              '• 정치자금 투명성 제고\n\n'
+              '👥 사회적 약자 보호\n'
+              '• 법률서비스 접근성 개선\n'
+              '• 공익변호사 확대\n'
+              '• 피해자 권리 보장 강화\n\n'
+              '📋 법제도 현대화\n'
+              '• 디지털 시대 법체계 정비\n'
+              '• 규제 합리화 추진\n'
+              '• 국민 편의 법무서비스',
         ),
       ];
     }
@@ -617,40 +724,39 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
             cursor: SystemMouseCursors.click,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              child: Image.asset(
+              child: ImageHelper.buildAssetImage(
                 imagePath,
                 fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  // 이미지 로드 실패시 기본 픽셀 오브젝트 표시
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: widget.candidate['color'].withOpacity(0.3),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.image_not_supported,
+                width: width,
+                height: height,
+                errorWidget: Container(
+                  decoration: BoxDecoration(
+                    color: widget.candidate['color'].withOpacity(0.3),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image_not_supported,
+                          color: widget.candidate['color'],
+                          size: 24,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '이미지 로드 실패',
+                          style: TextStyle(
+                            fontSize: 8,
                             color: widget.candidate['color'],
-                            size: 24,
+                            fontFamily: 'monospace',
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '이미지 로드 실패',
-                            style: TextStyle(
-                              fontSize: 8,
-                              color: widget.candidate['color'],
-                              fontFamily: 'monospace',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ),
