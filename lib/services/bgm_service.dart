@@ -1,18 +1,18 @@
 import 'dart:html' as html;
 import 'dart:async';
 
-class BgmService {
-  static final BgmService _instance = BgmService._internal();
-  factory BgmService() => _instance;
-  BgmService._internal();
+class BGMService {
+  static final BGMService _instance = BGMService._internal();
+  factory BGMService() => _instance;
+  BGMService._internal();
 
   html.AudioElement? _audioElement;
   bool _isPlaying = false;
   bool _isMuted = true; // 초기에는 음소거 상태
 
   // 상태 변경을 알리는 스트림
-  final StreamController<bool> _mutedStateController = StreamController<bool>.broadcast();
-  Stream<bool> get mutedStateStream => _mutedStateController.stream;
+  static final StreamController<bool> _isPlayingController = StreamController<bool>.broadcast();
+  static Stream<bool> get isPlayingStream => _isPlayingController.stream;
 
   bool get isPlaying => _isPlaying;
   bool get isMuted => _isMuted;
@@ -56,7 +56,7 @@ class BgmService {
         await _audioElement!.play();
         _isPlaying = true;
         _isMuted = false;
-        _mutedStateController.add(_isMuted);
+        _isPlayingController.add(true);
         print('BGM 재생 성공 - 상태: muted=$_isMuted, playing=$_isPlaying');
       } catch (e) {
         print('BGM 재생 실패: $e');
@@ -72,11 +72,16 @@ class BgmService {
       _audioElement!.pause();
       _isPlaying = false;
       _isMuted = true;
-      _mutedStateController.add(_isMuted);
+      _isPlayingController.add(false);
       print('BGM 일시정지 성공 - 상태: muted=$_isMuted, playing=$_isPlaying');
     } else {
       print('BGM 일시정지 건너뜀 - audioElement: ${_audioElement != null}, isPlaying: $_isPlaying');
     }
+  }
+
+  static Future<void> toggleBGM() async {
+    final instance = BGMService();
+    await instance.toggleBgm();
   }
 
   Future<void> toggleBgm() async {
@@ -108,6 +113,6 @@ class BgmService {
       _audioElement!.pause();
       _audioElement = null;
     }
-    _mutedStateController.close();
+    _isPlayingController.close();
   }
 } 

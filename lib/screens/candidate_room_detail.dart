@@ -13,43 +13,15 @@ class CandidateRoomDetail extends StatefulWidget {
 
 class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   final DateTime electionDay = DateTime(2025, 6, 3);
-  final BgmService _bgmService = BgmService();
-  bool _isBgmMuted = true; // 초기값을 true로 설정
-  late StreamSubscription _bgmStateSubscription;
 
   @override
   void initState() {
     super.initState();
-    _isBgmMuted = _bgmService.isMuted;
-    _setupBgmStateListener();
   }
 
   @override
   void dispose() {
-    _bgmStateSubscription.cancel();
     super.dispose();
-  }
-
-  void _setupBgmStateListener() {
-    _bgmStateSubscription = _bgmService.mutedStateStream.listen((isMuted) {
-      if (mounted) {
-        setState(() {
-          _isBgmMuted = isMuted;
-        });
-        print('후보 방 BGM 상태 동기화: ${isMuted ? "음소거" : "재생"}');
-      }
-    });
-  }
-
-  void _toggleBgm() async {
-    print('후보 방 BGM 토글 버튼 클릭 - 현재 UI 상태: ${_isBgmMuted ? "음소거" : "재생"}');
-    
-    try {
-      await _bgmService.toggleBgm();
-      // 상태는 스트림을 통해 자동으로 동기화됨
-    } catch (e) {
-      print('BGM 토글 에러: $e');
-    }
   }
   @override
   Widget build(BuildContext context) {
@@ -81,10 +53,26 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                     ],
                   ),
                 ),
-                // BGM 플레이어를 좌상단에 배치
+                // 뒤로가기 버튼을 좌상단에 배치
                 Positioned(
                   top: 20,
                   left: 20,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                // BGM 플레이어를 뒤로가기 버튼 옆에 배치
+                Positioned(
+                  top: 20,
+                  left: 70,
                   child: _buildBgmPlayer(),
                 ),
                 // D-Day 카운터를 우상단에 배치
@@ -92,22 +80,6 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                   top: 20,
                   right: 20,
                   child: _buildSimpleDDayCounter(),
-                ),
-                // 뒤로가기 버튼을 좌하단에 배치
-                Positioned(
-                  bottom: 20,
-                  left: 20,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      border: Border.all(color: widget.candidate['color'], width: 2),
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: widget.candidate['color']),
-                      onPressed: () => Navigator.of(context).pop(),
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
                 ),
                 // 제목을 우하단에 배치
                 Positioned(
@@ -321,13 +293,13 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               '• 친환경 교통수단 보급 확대\n'
               '• 환경교육 의무화로 인식 개선',
         ),
-        // 컴퓨터 (디지털 전환)
+        // 컴퓨터 (디지털 전환) - 크기 1.5배, 중앙 배치
         _buildImageObject(
           'assets/images/candidate_1/room_computer.png',
-          right: screenWidth * 0.05,
-          top: screenHeight * 0.12,
-          width: screenWidth * 0.28,
-          height: screenWidth * 0.22,
+          left: screenWidth * 0.25,
+          top: screenHeight * 0.35,
+          width: screenWidth * 0.42,
+          height: screenWidth * 0.33,
           title: '🖥️ 디지털 전환',
           description: 'AI·데이터 강국으로 도약!\n\n'
               '🤖 AI 산업 육성\n'
@@ -741,10 +713,9 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: const Color(0xFF8B4513).withOpacity(0.9),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(color: Colors.white, width: 2),
+                      decoration: BoxDecoration(
+              color: const Color(0xFF8B4513).withOpacity(0.9),
+              border: Border.all(color: Colors.white, width: 2),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
@@ -796,46 +767,25 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   }
 
   Widget _buildBgmPlayer() {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.white, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+    return StreamBuilder<bool>(
+      stream: BGMService.isPlayingStream,
+      builder: (context, snapshot) {
+        final isPlaying = snapshot.data ?? false;
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.7),
+            border: Border.all(color: Colors.white, width: 2),
           ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: _toggleBgm,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                _isBgmMuted ? Icons.volume_off : Icons.volume_up,
-                color: _isBgmMuted ? Colors.red : Colors.green,
-                size: 18,
-              ),
-              const SizedBox(width: 3),
-              Text(
-                'BGM',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: _isBgmMuted ? Colors.red : Colors.green,
-                  fontFamily: 'monospace',
-                ),
-              ),
-            ],
+          child: IconButton(
+            onPressed: BGMService.toggleBGM,
+            icon: Icon(
+              isPlaying ? Icons.volume_up : Icons.volume_off,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

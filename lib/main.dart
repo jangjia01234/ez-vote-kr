@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'screens/candidate_rooms_page.dart';
+import 'screens/title_screen.dart';
+import 'services/bgm_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // BGM 서비스 초기화
+  if (kIsWeb) {
+    await BGMService().initialize();
+  }
+  
   runApp(const MyApp());
 }
 
@@ -31,7 +39,7 @@ class MyApp extends StatelessWidget {
           trackVisibility: MaterialStatePropertyAll(false),
         ),
       ),
-      home: const CandidateRoomsPage(),
+      home: const TitleScreen(),
     );
   }
 }

@@ -13,9 +13,6 @@ class CandidateRoomsPage extends StatefulWidget {
 class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
   final DateTime electionDay = DateTime(2025, 6, 3);
   final ScrollController _scrollController = ScrollController();
-  final BgmService _bgmService = BgmService();
-  bool _isBgmMuted = true; // 초기값을 true로 설정
-  late StreamSubscription _bgmStateSubscription;
 
   final List<Map<String, dynamic>> candidates = const [
     {
@@ -55,44 +52,12 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
   @override
   void initState() {
     super.initState();
-    _initializeBgm();
-    _setupBgmStateListener();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
-    _bgmStateSubscription.cancel();
     super.dispose();
-  }
-
-  Future<void> _initializeBgm() async {
-    await _bgmService.initialize();
-    setState(() {
-      _isBgmMuted = _bgmService.isMuted;
-    });
-  }
-
-  void _setupBgmStateListener() {
-    _bgmStateSubscription = _bgmService.mutedStateStream.listen((isMuted) {
-      if (mounted) {
-        setState(() {
-          _isBgmMuted = isMuted;
-        });
-        print('메인 화면 BGM 상태 동기화: ${isMuted ? "음소거" : "재생"}');
-      }
-    });
-  }
-
-  void _toggleBgm() async {
-    print('메인 화면 BGM 토글 버튼 클릭 - 현재 UI 상태: ${_isBgmMuted ? "음소거" : "재생"}');
-    
-    try {
-      await _bgmService.toggleBgm();
-      // 상태는 스트림을 통해 자동으로 동기화됨
-    } catch (e) {
-      print('BGM 토글 에러: $e');
-    }
   }
 
   @override
@@ -227,53 +192,25 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
   }
 
   Widget _buildBgmPlayer() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.9), // 더 진하게 해서 눈에 띄게
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.white, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+    return StreamBuilder<bool>(
+      stream: BGMService.isPlayingStream,
+      builder: (context, snapshot) {
+        final isPlaying = snapshot.data ?? false;
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(25),
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            print('메인 화면 BGM 버튼 클릭됨!');
-            _toggleBgm();
-          },
-          borderRadius: BorderRadius.circular(6),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  _isBgmMuted ? Icons.volume_off : Icons.volume_up,
-                  color: _isBgmMuted ? Colors.red : Colors.green,
-                  size: 20,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'BGM',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: _isBgmMuted ? Colors.red : Colors.green,
-                    fontFamily: 'monospace',
-                  ),
-                ),
-              ],
+          child: IconButton(
+            onPressed: BGMService.toggleBGM,
+            icon: Icon(
+              isPlaying ? Icons.volume_up : Icons.volume_off,
+              color: Colors.white,
+              size: 24,
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
