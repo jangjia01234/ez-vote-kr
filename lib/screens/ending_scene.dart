@@ -281,15 +281,43 @@ class _EndingSceneState extends State<EndingScene> {
           child: Container(
             width: 390,
             height: 844,
-            decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/angelcat_background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Stack(
-            children: [
-              // BGM 플레이어 (좌상단)
+            child: Stack(
+              children: [
+                // 배경 이미지
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/angelcat_ending_background.png',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      print('엔딩 배경 이미지 로드 실패: $error');
+                      // 기존 배경 이미지로 폴백
+                      return Image.asset(
+                        'assets/images/angelcat_background.png',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (context, error2, stackTrace2) {
+                          print('기본 배경 이미지도 로드 실패: $error2');
+                          return Container(
+                            color: const Color(0xFF2C2C2C),
+                            child: const Center(
+                              child: Text(
+                                '배경 이미지를 불러올 수 없습니다',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                // BGM 플레이어 (좌상단)
               Positioned(
                 top: 50,
                 left: 20,
@@ -526,8 +554,8 @@ class _EndingSceneState extends State<EndingScene> {
                     ),
                   ),
                 ),
-            ],
-          ),
+              ],
+            ),
         ),
         ),
       ),

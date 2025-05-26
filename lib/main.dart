@@ -20,6 +20,7 @@ Future<void> precacheImages(BuildContext context) async {
     'assets/images/intro_background.png',
     'assets/images/livingroom_background.png',
     'assets/images/angelcat_background.png',
+    'assets/images/angelcat_ending_background.png',
     'assets/images/main_background.png',
     'assets/images/candidate_1/room_background_1_empty.png',
     'assets/images/candidate_1/avatar_1.png',
