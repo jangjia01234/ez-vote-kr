@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:html' as html;
 import 'title_screen.dart';
 import '../services/bgm_service.dart';
+import '../services/analytics_service.dart';
 
 class EndingScene extends StatefulWidget {
   const EndingScene({super.key});
@@ -13,6 +14,13 @@ class EndingScene extends StatefulWidget {
 class _EndingSceneState extends State<EndingScene> {
   int currentDialogue = 0;
   bool showButtons = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 엔딩 화면 방문 추적
+    AnalyticsService.trackPageView('ending_scene');
+  }
 
   final List<String> endingDialogues = [
     "😇 \"모든 후보들의 방을 다 둘러보셨군요!\"",
@@ -34,10 +42,14 @@ class _EndingSceneState extends State<EndingScene> {
   }
 
   void openElectionWebsite() {
+    // 선관위 사이트 방문 이벤트 추적
+    AnalyticsService.trackEvent('election_website_visit');
     html.window.open('https://www.nec.go.kr', '_blank');
   }
 
   void restartGame() {
+    // 게임 재시작 이벤트 추적
+    AnalyticsService.trackEvent('game_restart');
     Navigator.pushAndRemoveUntil(
       context,
       PageRouteBuilder(

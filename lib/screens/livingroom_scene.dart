@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dream_world_scene.dart';
 import '../services/bgm_service.dart';
+import '../services/analytics_service.dart';
 
 class LivingroomScene extends StatefulWidget {
   const LivingroomScene({super.key});
@@ -12,6 +13,13 @@ class LivingroomScene extends StatefulWidget {
 class _LivingroomSceneState extends State<LivingroomScene> {
   int currentDialogue = 0;
   bool isTransitioning = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 거실 씬 방문 추적
+    AnalyticsService.trackPageView('livingroom_scene');
+  }
 
   final List<String> dialogues = [
     "TV에서 2025년 대선 뉴스가 나오고 있다...",

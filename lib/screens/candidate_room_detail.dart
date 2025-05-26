@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/bgm_service.dart';
+import '../services/analytics_service.dart';
 
 class CandidateRoomDetail extends StatefulWidget {
   final Map<String, dynamic> candidate;
@@ -17,6 +18,8 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   @override
   void initState() {
     super.initState();
+    // 후보 방 상세 화면 방문 추적
+    AnalyticsService.trackPageView('candidate_room_${widget.candidate['id']}');
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'livingroom_scene.dart';
+import '../services/analytics_service.dart';
 
 class TitleScreen extends StatefulWidget {
   const TitleScreen({super.key});
@@ -15,6 +16,8 @@ class _TitleScreenState extends State<TitleScreen> {
   void initState() {
     super.initState();
     _loadImages();
+    // 타이틀 화면 방문 추적
+    AnalyticsService.trackPageView('title_screen');
   }
 
   Future<void> _loadImages() async {
@@ -79,6 +82,8 @@ class _TitleScreenState extends State<TitleScreen> {
                       margin: const EdgeInsets.only(bottom: 100),
                       child: ElevatedButton(
                         onPressed: _imagesLoaded ? () {
+                          // 게임 시작 이벤트 추적
+                          AnalyticsService.trackEvent('game_start');
                           Navigator.pushReplacement(
                             context,
                             PageRouteBuilder(

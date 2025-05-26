@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'candidate_room_detail.dart';
 import 'ending_scene.dart';
 import '../services/bgm_service.dart';
+import '../services/analytics_service.dart';
 
 class DreamWorldScene extends StatefulWidget {
   const DreamWorldScene({super.key});
@@ -58,6 +59,9 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
   @override
   void initState() {
     super.initState();
+    // 꿈속 세계 씬 방문 추적
+    AnalyticsService.trackPageView('dream_world_scene');
+    
     _fadeController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -97,6 +101,13 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
       visitedCandidates.add(candidate['id']);
     });
     
+    // 후보 방 방문 이벤트 추적
+    AnalyticsService.trackEvent('candidate_visit', properties: {
+      'candidate_id': candidate['id'],
+      'candidate_name': candidate['name'],
+      'candidate_party': candidate['party'],
+    });
+    
     Navigator.push(
       context,
       PageRouteBuilder(
@@ -108,6 +119,9 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
   }
 
   void goToEnding() {
+    // 모든 후보 방문 완료 이벤트 추적
+    AnalyticsService.trackEvent('all_candidates_visited');
+    
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
