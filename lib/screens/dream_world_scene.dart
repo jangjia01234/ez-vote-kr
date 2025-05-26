@@ -20,10 +20,12 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
   final List<String> angelCatDialogues = [
     "(어..? 여긴 어디지?)",
     "(꿈속인가? 뭔가 이상한 느낌이...)",
-    "😇 \"안녕하세요! 저는 천사 고양이예요~\"",
-    "😇 \"여기는 꿈속 세계입니다. 각 후보들의 방을 구경해보세요!\"",
-    "😇 \"후보들의 방을 둘러보고 그들을 알아가보세요.\"",
-    "😇 \"모든 방을 다 보시면 현실로 돌아갈 수 있어요!\""
+    "😇 \"안녕하세요! 저는 당신을 돕기 위해 온 천사다냥~\"",
+    "음.. 뭔가 허접한데... 진짜 천사 맞아?!",
+    "😇 \"크흠.. 아, 암튼!! 천사랍니다! 당신이 고민에 빠졌다는 소리를 듣고 왔어요!\"",
+    "😇 \"당신을 위해 후보 4명의 방으로 가는 열쇠를 줄게요\"",
+    "😇 \"참고로 방 안에는 숨겨진 물건들이 있어요! 잘 찾아보세요~\"",
+    "😇 \"모든 방을 다 보시면 현실로 돌아갈 수 있어요! 그럼 안녕~\""
   ];
 
   final List<Map<String, dynamic>> candidates = [
@@ -245,7 +247,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
               // 후보 선택 버튼들 (하단으로 이동)
               if (showCandidateButtons)
                 Positioned(
-                  bottom: 120,
+                  bottom: 100,
                   left: 0,
                   right: 0,
                   child: Column(
