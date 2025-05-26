@@ -32,7 +32,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
     {
       'id': 'lee_jae_myung',
       'name': '이재명',
-      'party': '민주당',
+      'party': '더불어민주당',
       'color': const Color(0xFF3B82F6),
     },
     {
@@ -50,7 +50,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
     {
       'id': 'kwon_young_guk',
       'name': '권영국',
-      'party': '진보당',
+      'party': '민주노동당',
       'color': const Color(0xFFEAB308),
     },
   ];

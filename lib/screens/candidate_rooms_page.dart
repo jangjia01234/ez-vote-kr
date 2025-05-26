@@ -42,7 +42,7 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
     {
       'id': 'kwon_young_guk',
       'name': '권영국',
-      'party': '진보당',
+      'party': '민주노동당',
       'color': Color(0xFFFFD700),
       'houseColor': Color(0xFFFFD700),
       'supportRate': 5,
