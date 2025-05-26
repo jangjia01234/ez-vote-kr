@@ -224,11 +224,30 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
                   'assets/images/main_background.png',
                   fit: BoxFit.cover, // 이미지가 컨테이너를 완전히 채우도록
                   errorBuilder: (context, error, stackTrace) {
-                    // 이미지 로드 실패시 기본 배경
+                    // 이미지 로드 실패시 간단한 에러 메시지
                     return Container(
                       color: const Color(0xFFE8DCC0),
-                      child: CustomPaint(
-                        painter: DetailedGroundPatternPainter(),
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image_not_supported,
+                              size: 64,
+                              color: Color(0xFF8B4513),
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              '메인 배경 이미지를 불러올 수 없습니다',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF8B4513),
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },

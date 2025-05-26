@@ -78,140 +78,77 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   }
 
   Widget _buildPixelRoom() {
+    final candidateId = widget.candidate['id'];
+    
+    // 각 후보별 배경 이미지 매칭
+    String backgroundPath;
+    switch (candidateId) {
+      case 'lee_jae_myung':
+        backgroundPath = 'assets/images/room_background_1.png';
+        break;
+      case 'kim_moon_soo':
+        backgroundPath = 'assets/images/room_background_2.png';
+        break;
+      case 'lee_jun_seok':
+        backgroundPath = 'assets/images/room_background_4.png';
+        break;
+      case 'kwon_young_guk':
+        backgroundPath = 'assets/images/room_background_5.png';
+        break;
+      default:
+        backgroundPath = 'assets/images/room_background_1.png';
+    }
+
     return Container(
       width: double.infinity,
-      height: 600, // 높이를 다시 600으로 설정
+      height: 600,
       child: Stack(
         children: [
           // 배경 이미지
           Positioned.fill(
             child: Image.asset(
-              'assets/images/room_background.png',
-              fit: BoxFit.cover, // 이미지를 더 크게 보이도록 cover로 변경
+              backgroundPath,
+              fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                // 이미지 로드 실패시 기본 배경
-                return Stack(
-                  children: [
-                    // 방 배경 (회색 벽)
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFB0B0B0),
-                      ),
-                    ),
-                    // 바닥
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      height: 100,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF8B7355), // 나무 바닥색
+                // 이미지 로드 실패시 간단한 에러 메시지
+                return Container(
+                  color: const Color(0xFFE8DCC0),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image_not_supported,
+                          size: 64,
+                          color: widget.candidate['color'],
                         ),
-                        child: CustomPaint(
-                          painter: FloorPatternPainter(),
+                        const SizedBox(height: 16),
+                        Text(
+                          '배경 이미지를 불러올 수 없습니다',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: widget.candidate['color'],
+                            fontFamily: 'monospace',
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '($backgroundPath)',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ],
                     ),
-                    // 벽 패턴
-                    Positioned.fill(
-                      child: CustomPaint(
-                        painter: WallPatternPainter(),
-                      ),
-                    ),
-                  ],
+                  ),
                 );
               },
             ),
           ),
-          // 천장 조명 (배경 이미지 위에 오버레이) - 위치 조정
-          _buildCeilingLight(),
-          // 창문 (배경 이미지 위에 오버레이) - 위치 조정
-          _buildWindow(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCeilingLight() {
-    return Positioned(
-      top: 50,
-      left: 350, // 중앙으로 조정
-      child: Column(
-        children: [
-          // 조명 고리
-          Container(
-            width: 60,
-            height: 8,
-            decoration: BoxDecoration(
-              color: const Color(0xFF404040),
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          const SizedBox(height: 4),
-          // 조명
-          Container(
-            width: 80,
-            height: 80,
-            decoration: const BoxDecoration(
-              color: Color(0xFFFFF8DC),
-              shape: BoxShape.circle,
-            ),
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFFFE0),
-                shape: BoxShape.circle,
-              ),
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFFFF0),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWindow() {
-    return Positioned(
-      top: 80,
-      right: 50,
-      child: Container(
-        width: 120,
-        height: 100,
-        decoration: BoxDecoration(
-          color: const Color(0xFF404040),
-          border: Border.all(color: Colors.black, width: 2),
-        ),
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF87CEEB),
-                    border: Border.all(color: const Color(0xFF404040), width: 1),
-                  ),
-                ),
-              ),
-              Container(width: 2, color: const Color(0xFF404040)),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF87CEEB),
-                    border: Border.all(color: const Color(0xFF404040), width: 1),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -240,7 +177,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
             ),
           ),
           const SizedBox(height: 8),
-          // 픽셀 아트 캐릭터
+          // 아바타 이미지
           _buildPixelCharacter(),
         ],
       ),
@@ -646,48 +583,4 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
       },
     );
   }
-}
-
-class FloorPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint1 = Paint()..color = const Color(0xFF6B4E3D);
-    final paint2 = Paint()..color = const Color(0xFF8B7355);
-    
-    // 나무 바닥 패턴
-    for (int i = 0; i < size.width; i += 20) {
-      canvas.drawRect(
-        Rect.fromLTWH(i.toDouble(), 0, 18, size.height),
-        i % 40 == 0 ? paint1 : paint2,
-      );
-      // 나무 결 표현
-      canvas.drawLine(
-        Offset(i.toDouble() + 18, 0),
-        Offset(i.toDouble() + 18, size.height),
-        Paint()..color = Colors.black..strokeWidth = 1,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class WallPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color(0xFF909090);
-    
-    // 벽 텍스처
-    for (int i = 0; i < size.width; i += 4) {
-      for (int j = 0; j < size.height - 100; j += 4) {
-        if ((i + j) % 8 == 0) {
-          canvas.drawRect(Rect.fromLTWH(i.toDouble(), j.toDouble(), 2, 2), paint);
-        }
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 } 
