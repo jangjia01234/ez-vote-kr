@@ -188,8 +188,8 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
   Widget _buildCandidateCharacter(double screenWidth, double screenHeight) {
     return Positioned(
-      bottom: screenHeight * 0.15,  // 화면 높이의 15% 위치
-      left: screenWidth * 0.08,     // 화면 너비의 8% 위치
+      bottom: 127.0,  // 390x844 기준 절대 좌표
+      left: 31.0,     // 390x844 기준 절대 좌표
       child: Column(
         children: [
           // 후보자 이름
@@ -270,16 +270,16 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   }
 
   List<Widget> _buildRoomObjects(double screenWidth, double screenHeight) {
-    // 이재명 후보의 경우 실제 이미지 오브젝트 사용
+    // 이재명 후보의 경우 실제 이미지 오브젝트 사용 (390x844 기준 절대 좌표)
     if (widget.candidate['id'] == 'lee_jae_myung') {
       return [
         // 화분 (기후·녹색산업)
         _buildImageObject(
           'assets/images/candidate_1/room_flowerPot.png',
-          left: screenWidth * 0.05,
-          top: screenHeight * 0.15,
-          width: screenWidth * 0.22,
-          height: screenWidth * 0.22,
+          left: 0,
+          top: 100.0,
+          width: 126.0,
+          height: 126.0,
           title: '🌱 기후·녹색산업',
           description: '기후위기 대응을 위한 종합 계획!\n\n'
               '🔋 재생에너지 확대\n'
@@ -298,10 +298,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 컴퓨터 (디지털 전환) - 크기 1.5배, 중앙 배치
         _buildImageObject(
           'assets/images/candidate_1/room_computer.png',
-          left: screenWidth * 0.25,
-          top: screenHeight * 0.35,
-          width: screenWidth * 0.42,
-          height: screenWidth * 0.33,
+          left: 50.0,
+          top: 260.0,
+          width: 234.0,
+          height: 195.0,
           title: '🖥️ 디지털 전환',
           description: 'AI·데이터 강국으로 도약!\n\n'
               '🤖 AI 산업 육성\n'
@@ -323,10 +323,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 아파트 (기본주택)
         _buildImageObject(
           'assets/images/candidate_1/room_apartment.png',
-          left: screenWidth * 0.33,
-          bottom: screenHeight * 0.25,
-          width: screenWidth * 0.33,
-          height: screenWidth * 0.28,
+          right: 5.0,
+          bottom: 211.0,
+          width: 129.0,
+          height: 109.0,
           title: '🏘️ 기본주택',
           description: '모든 국민의 주거권 보장!\n\n'
               '🏠 기본주택 공급\n'
@@ -348,10 +348,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 서류봉투 (개헌 추진)
         _buildImageObject(
           'assets/images/candidate_1/room_suitcase.png',
-          right: screenWidth * 0.33,
-          bottom: screenHeight * 0.18,
-          width: screenWidth * 0.25,
-          height: screenWidth * 0.19,
+          left: 120.0,
+          bottom: 152.0,
+          width: 98.0,
+          height: 74.0,
           title: '💼 개헌 추진',
           description: '국회 중심 책임정부 실현!\n\n'
               '🏛️ 권력구조 개편\n'
@@ -374,16 +374,16 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
       ];
     }
     
-    // 김문수 후보의 경우 실제 이미지 오브젝트 사용
+    // 김문수 후보의 경우 실제 이미지 오브젝트 사용 (390x844 기준 절대 좌표)
     if (widget.candidate['id'] == 'kim_moon_soo') {
       return [
-        // 기차 (교통·인프라)
+        // 기차 (교통·인프라) - 침대 아래쪽에 배치
         _buildImageObject(
           'assets/images/candidate_2/room_train.png',
-          left: screenWidth * 0.08,
-          top: screenHeight * 0.20,
-          width: screenWidth * 0.35,
-          height: screenWidth * 0.25,
+          left: 254.0,
+          bottom: 130.0,
+          width: 137.0,
+          height: 98.0,
           title: '🚄 교통·인프라',
           description: '전국을 하나로 연결하는 교통망!\n\n'
               '🚅 고속철도 확충\n'
@@ -403,13 +403,13 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               '• 지역균형발전 교통망\n'
               '• 친환경 교통수단 보급',
         ),
-        // 돈통 (경제·세제)
+        // 돈통 (경제·세제) - 책장 바로 옆에 배치
         _buildImageObject(
           'assets/images/candidate_2/room_moneybox.png',
-          right: screenWidth * 0.08,
-          top: screenHeight * 0.18,
-          width: screenWidth * 0.28,
-          height: screenWidth * 0.30,
+          right: 90.0,
+          top: 280.0,
+          width: 125.0,
+          height: 133.0,
           title: '💰 경제·세제',
           description: '서민을 위한 경제정책!\n\n'
               '💸 세금 부담 완화\n'
@@ -429,13 +429,13 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               '• 벤처기업 육성 지원\n'
               '• 수출 중소기업 지원 강화',
         ),
-        // 군모 (안보·국방)
+        // 군모 (안보·국방) - 책장 위에 배치
         _buildImageObject(
           'assets/images/candidate_2/room_militarycap.png',
-          left: screenWidth * 0.15,
-          bottom: screenHeight * 0.30,
-          width: screenWidth * 0.25,
-          height: screenWidth * 0.22,
+          left: 10.0,
+          top: 350.0,
+          width: 98.0,
+          height: 86.0,
           title: '🪖 안보·국방',
           description: '튼튼한 안보로 평화 수호!\n\n'
               '🛡️ 국방력 강화\n'
@@ -455,13 +455,13 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               '• 사이버 보안 역량 확충\n'
               '• 국가정보 보호 강화',
         ),
-        // 법전 (법무·정의)
+        // 법전 (법무·정의) - 침대 위에 배치
         _buildImageObject(
           'assets/images/candidate_2/room_lawbook.png',
-          right: screenWidth * 0.15,
-          bottom: screenHeight * 0.20,
-          width: screenWidth * 0.22,
-          height: screenWidth * 0.28,
+          right: 5.0,
+          top: 278.0,
+          width: 66.0,
+          height: 89.0,
           title: '⚖️ 법무·정의',
           description: '공정하고 투명한 사회 구현!\n\n'
               '🏛️ 사법개혁 추진\n'
@@ -484,16 +484,16 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
       ];
     }
     
-    // 이준석 후보의 경우 실제 이미지 오브젝트 사용
+    // 이준석 후보의 경우 실제 이미지 오브젝트 사용 (390x844 기준 절대 좌표)
     if (widget.candidate['id'] == 'lee_jun_seok') {
       return [
         // 테이블 (정치개혁)
         _buildImageObject(
           'assets/images/candidate_4/room_table.png',
-          left: screenWidth * 0.05,
-          top: screenHeight * 0.18,
-          width: screenWidth * 0.30,
-          height: screenWidth * 0.25,
+          left: 60.0,
+          top: 260.0,
+          width: 137.0,
+          height: 118.0,
           title: '🏛️ 정치개혁',
           description: '정치의 새로운 패러다임을 제시!\n\n'
               '🗳️ 선거제도 혁신\n'
@@ -516,10 +516,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 플라스크 (과학기술)
         _buildImageObject(
           'assets/images/candidate_4/room_plask.png',
-          right: screenWidth * 0.05,
-          top: screenHeight * 0.20,
-          width: screenWidth * 0.25,
-          height: screenWidth * 0.28,
+          right: 5.0,
+          top: 270.0,
+          width: 78.0,
+          height: 89.0,
           title: '🧪 과학기술',
           description: '과학기술로 미래를 선도!\n\n'
               '🚀 우주항공 산업\n'
@@ -542,10 +542,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 서류 (교육개혁)
         _buildImageObject(
           'assets/images/candidate_4/room_document.png',
-          left: screenWidth * 0.15,
-          bottom: screenHeight * 0.30,
-          width: screenWidth * 0.28,
-          height: screenWidth * 0.22,
+          left: 150.0,
+          bottom: 200.0,
+          width: 109.0,
+          height: 86.0,
           title: '📚 교육개혁',
           description: '미래형 교육 시스템 구축!\n\n'
               '🎓 대학 입시 개혁\n'
@@ -568,10 +568,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 책 (청년정책)
         _buildImageObject(
           'assets/images/candidate_4/room_book.png',
-          right: screenWidth * 0.15,
-          bottom: screenHeight * 0.25,
-          width: screenWidth * 0.22,
-          height: screenWidth * 0.25,
+          right: 20.0,
+          bottom: 211.0,
+          width: 96.0,
+          height: 108.0,
           title: '👨‍💼 청년정책',
           description: '청년이 희망을 가질 수 있는 사회!\n\n'
               '🏠 청년 주거 지원\n'
@@ -594,16 +594,16 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
       ];
     }
     
-    // 권영국 후보의 경우 실제 이미지 오브젝트 사용
+    // 권영국 후보의 경우 실제 이미지 오브젝트 사용 (390x844 기준 절대 좌표)
     if (widget.candidate['id'] == 'kwon_young_guk') {
       return [
         // 저울 (사회정의)
         _buildImageObject(
           'assets/images/candidate_5/room_scale.png',
-          left: screenWidth * 0.08,
-          top: screenHeight * 0.22,
-          width: screenWidth * 0.28,
-          height: screenWidth * 0.25,
+          left: 5.0,
+          top: 100.0,
+          width: 109.0,
+          height: 98.0,
           title: '⚖️ 사회정의',
           description: '공정하고 평등한 사회 실현!\n\n'
               '🏛️ 사법 정의\n'
@@ -626,10 +626,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 식물 (환경정책)
         _buildImageObject(
           'assets/images/candidate_5/room_plant.png',
-          right: screenWidth * 0.08,
-          top: screenHeight * 0.18,
-          width: screenWidth * 0.25,
-          height: screenWidth * 0.30,
+          right: 31.0,
+          top: 152.0,
+          width: 98.0,
+          height: 117.0,
           title: '🌱 환경정책',
           description: '지속가능한 녹색 사회 건설!\n\n'
               '🌍 탄소중립 실현\n'
@@ -652,10 +652,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 헬멧 (노동정책)
         _buildImageObject(
           'assets/images/candidate_5/room_helmet.png',
-          left: screenWidth * 0.15,
-          bottom: screenHeight * 0.32,
-          width: screenWidth * 0.22,
-          height: screenWidth * 0.20,
+          left: 30.0,
+          bottom: 290.0,
+          width: 86.0,
+          height: 78.0,
           title: '👷 노동정책',
           description: '노동자의 권익을 최우선으로!\n\n'
               '⏰ 노동시간 단축\n'
@@ -678,10 +678,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         // 담요 (복지정책)
         _buildImageObject(
           'assets/images/candidate_5/room_blanket.png',
-          right: screenWidth * 0.15,
-          bottom: screenHeight * 0.22,
-          width: screenWidth * 0.25,
-          height: screenWidth * 0.20,
+          right: 0,
+          bottom: 350.0,
+          width: 128.0,
+          height: 108.0,
           title: '🏥 복지정책',
           description: '모든 국민의 기본권 보장!\n\n'
               '🏥 의료 공공성\n'
@@ -719,8 +719,8 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
   Widget _buildBookshelf(double screenWidth, double screenHeight) {
     return Positioned(
-      left: screenWidth * 0.14,
-      top: screenHeight * 0.25,
+      left: 55.0,
+      top: 211.0,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('정책 자료실', '${widget.candidate['name']} 후보의 상세 정책을 확인해보세요!'),
         child: Container(
@@ -775,8 +775,8 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
   Widget _buildSofa(double screenWidth, double screenHeight) {
     return Positioned(
-      right: screenWidth * 0.14,
-      bottom: screenHeight * 0.25,
+      right: 55.0,
+      bottom: 211.0,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('편안한 대화', '${widget.candidate['name']} 후보와 편안하게 대화해보세요!'),
         child: Container(
@@ -837,8 +837,8 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
   Widget _buildDesk(double screenWidth, double screenHeight) {
     return Positioned(
-      right: screenWidth * 0.14,
-      bottom: screenHeight * 0.33,
+      right: 55.0,
+      bottom: 278.0,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('업무 자료', '${widget.candidate['name']} 후보의 업무 계획을 살펴보세요!'),
         child: Container(
@@ -883,8 +883,8 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
 
   Widget _buildPlant(double screenWidth, double screenHeight) {
     return Positioned(
-      left: screenWidth * 0.45,
-      top: screenHeight * 0.33,
+      left: 176.0,
+      top: 278.0,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('환경 정책', '${widget.candidate['name']} 후보의 환경 정책을 확인해보세요!'),
         child: Container(
@@ -1009,7 +1009,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '안녕하세요, ${widget.candidate['name']}입니다!',
+              '어서오세요, 제 방에 오신 것을 환영합니다!',
               style: TextStyle(
                 color: widget.candidate['color'],
                 fontSize: 14,
@@ -1019,7 +1019,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
             ),
             const SizedBox(height: 8),
             Text(
-              '방 안의 오브젝트들을 클릭해서\n제 정책과 비전을 확인해보세요!',
+              '방 안의 물건들을 터치해서\n제 정책과 앞으로의 비전을 확인해보세요!',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,

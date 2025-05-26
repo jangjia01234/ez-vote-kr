@@ -16,8 +16,9 @@ class _EndingSceneState extends State<EndingScene> {
 
   final List<String> endingDialogues = [
     "😇 \"모든 후보들의 방을 다 둘러보셨군요!\"",
-    "✨ \"이제 각 후보들에 대해 더 잘 알게 되셨을 거예요.\"",
-    "🗳️ \"현실에서도 신중하게 선택하시길 바라요. 게임을 완료하신 것을 축하드립니다!\""
+    "😇 \"이제 각 후보들에 대해 더 잘 알게 되셨을 거예요.\"",
+    "😇 \"선택에 도움이 되었길..\"",
+    "😇 \"아참, 6월 3일에 꼭 투표하라냥!\""
   ];
 
   void nextDialogue() {
@@ -174,6 +175,14 @@ class _EndingSceneState extends State<EndingScene> {
                                 color: Color(0xFF64748B),
                               ),
                             ),
+                            SizedBox(height: 4),
+                            Text(
+                              '아래에서 더 많은 정보를 확인해보세요!',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF64748B),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -191,7 +200,7 @@ class _EndingSceneState extends State<EndingScene> {
                           side: const BorderSide(color: Colors.black, width: 3),
                         ),
                         child: const Text(
-                          '중앙선거관리위원회 사이트',
+                          '선관위 사이트 바로가기',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -219,6 +228,7 @@ class _EndingSceneState extends State<EndingScene> {
                           ),
                         ),
                       ),
+                      // TODO: 문의하기 버튼
                     ],
                   ),
                 ),

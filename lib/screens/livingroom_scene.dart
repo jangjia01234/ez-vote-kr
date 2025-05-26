@@ -14,11 +14,11 @@ class _LivingroomSceneState extends State<LivingroomScene> {
   bool isTransitioning = false;
 
   final List<String> dialogues = [
-    "📺 TV에서 2025년 대선 뉴스가 나오고 있다...",
-    "💭 \"또 선거철이구나... 누구를 뽑아야 할까?\"",
-    "😴 \"각 후보들이 어떤 사람인지 알고 싶은데...\"",
-    "💤 \"잠깐만 눈을 붙여볼까...\"",
-    "✨ 당신은 깊은 잠에 빠져들었다..."
+    "TV에서 2025년 대선 뉴스가 나오고 있다...",
+    "(또 선거철이구나... 누구를 뽑아야 할까?)",
+    "(정치는 항상 어렵단 말이지.. 아직도 결정을 못했어)",
+    "(흠냐..잠깐만 눈 좀 붙여볼까...💤)",
+    "당신은 깜빡 잠에 들었다..."
   ];
 
   void nextDialogue() {

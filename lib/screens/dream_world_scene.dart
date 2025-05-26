@@ -18,12 +18,12 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
   late Animation<double> _fadeAnimation;
 
   final List<String> angelCatDialogues = [
-    "💭 \"어..? 여긴 어디지?\"",
-    "😵 \"꿈속인가? 뭔가 이상한 느낌이...\"",
+    "(어..? 여긴 어디지?)",
+    "(꿈속인가? 뭔가 이상한 느낌이...)",
     "😇 \"안녕하세요! 저는 천사 고양이예요~\"",
-    "✨ \"여기는 꿈속 세계입니다. 각 후보들의 방을 구경해보세요!\"",
-    "🏠 \"후보들의 방을 둘러보고 그들을 알아가보세요.\"",
-    "🗳️ \"모든 방을 다 보시면 현실로 돌아갈 수 있어요!\""
+    "😇 \"여기는 꿈속 세계입니다. 각 후보들의 방을 구경해보세요!\"",
+    "😇 \"후보들의 방을 둘러보고 그들을 알아가보세요.\"",
+    "😇 \"모든 방을 다 보시면 현실로 돌아갈 수 있어요!\""
   ];
 
   final List<Map<String, dynamic>> candidates = [
@@ -259,7 +259,7 @@ class _DreamWorldSceneState extends State<DreamWorldScene> with TickerProviderSt
                           border: Border.all(color: Colors.white, width: 2),
                         ),
                         child: const Text(
-                          '누구의 방을 볼래?',
+                          '누구의 방을 볼까?',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
