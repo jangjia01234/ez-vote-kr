@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'candidate_room_detail.dart';
+import '../services/bgm_service.dart';
 
 class CandidateRoomsPage extends StatefulWidget {
   const CandidateRoomsPage({super.key});
@@ -11,6 +13,9 @@ class CandidateRoomsPage extends StatefulWidget {
 class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
   final DateTime electionDay = DateTime(2025, 6, 3);
   final ScrollController _scrollController = ScrollController();
+  final BgmService _bgmService = BgmService();
+  bool _isBgmMuted = true; // 초기값을 true로 설정
+  late StreamSubscription _bgmStateSubscription;
 
   final List<Map<String, dynamic>> candidates = const [
     {
@@ -48,42 +53,65 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _initializeBgm();
+    _setupBgmStateListener();
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
+    _bgmStateSubscription.cancel();
     super.dispose();
+  }
+
+  Future<void> _initializeBgm() async {
+    await _bgmService.initialize();
+    setState(() {
+      _isBgmMuted = _bgmService.isMuted;
+    });
+  }
+
+  void _setupBgmStateListener() {
+    _bgmStateSubscription = _bgmService.mutedStateStream.listen((isMuted) {
+      if (mounted) {
+        setState(() {
+          _isBgmMuted = isMuted;
+        });
+        print('메인 화면 BGM 상태 동기화: ${isMuted ? "음소거" : "재생"}');
+      }
+    });
+  }
+
+  void _toggleBgm() async {
+    print('메인 화면 BGM 토글 버튼 클릭 - 현재 UI 상태: ${_isBgmMuted ? "음소거" : "재생"}');
+    
+    try {
+      await _bgmService.toggleBgm();
+      // 상태는 스트림을 통해 자동으로 동기화됨
+    } catch (e) {
+      print('BGM 토글 에러: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFE8DCC0), // 베이지색 배경
-      body: SafeArea(
-        child: Scrollbar(
-          thumbVisibility: false,
-          trackVisibility: false,
-          controller: _scrollController,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: const BouncingScrollPhysics(),
-            controller: _scrollController,
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      _buildHeader(),
-                      const SizedBox(height: 30),
-                      _buildPixelVillage(context),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
-                ),
-              ),
+      body: Center(
+        child: Stack(
+          children: [
+            // 모바일 크기로 고정된 게임 화면
+            _buildPixelVillage(context),
+            // 상단 중앙에 헤더 (BGM, D-Day 버튼과 겹치지 않게)
+            Positioned(
+              top: 80, // BGM과 D-Day 버튼 아래로 이동
+              left: 60,
+              right: 60,
+              child: _buildHeader(),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -198,75 +226,121 @@ class _CandidateRoomsPageState extends State<CandidateRoomsPage> {
     );
   }
 
-  Widget _buildPixelVillage(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 800, // 이미지 크기에 맞춰 고정 너비 설정
-        height: 600, // 이미지 크기에 맞춰 고정 높이 설정
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFF8B4513), width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Stack(
-            children: [
-              // 배경 이미지
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/images/main_background.png',
-                  fit: BoxFit.cover, // 이미지가 컨테이너를 완전히 채우도록
-                  errorBuilder: (context, error, stackTrace) {
-                    // 이미지 로드 실패시 간단한 에러 메시지
-                    return Container(
-                      color: const Color(0xFFE8DCC0),
-                      child: const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.image_not_supported,
-                              size: 64,
-                              color: Color(0xFF8B4513),
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              '메인 배경 이미지를 불러올 수 없습니다',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF8B4513),
-                                fontFamily: 'monospace',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+  Widget _buildBgmPlayer() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.9), // 더 진하게 해서 눈에 띄게
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            print('메인 화면 BGM 버튼 클릭됨!');
+            _toggleBgm();
+          },
+          borderRadius: BorderRadius.circular(6),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  _isBgmMuted ? Icons.volume_off : Icons.volume_up,
+                  color: _isBgmMuted ? Colors.red : Colors.green,
+                  size: 20,
                 ),
-              ),
-              // 4개 집들 (이미지 크기에 맞게 위치 조정)
-              _buildHouse(context, candidates[0], 150, 150),   // 이재명 집
-              _buildHouse(context, candidates[1], 550, 150),   // 김문수 집
-              _buildHouse(context, candidates[2], 150, 350),   // 이준석 집
-              _buildHouse(context, candidates[3], 550, 350),   // 권영국 집
-              // D-Day 카운터를 우상단에 배치
-              Positioned(
-                top: 20,
-                right: 20,
-                child: _buildSimpleDDayCounter(),
-              ),
-            ],
+                const SizedBox(width: 4),
+                Text(
+                  'BGM',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: _isBgmMuted ? Colors.red : Colors.green,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPixelVillage(BuildContext context) {
+    // 모바일 크기로 고정 (iPhone 14 기준)
+    const double mobileWidth = 390;
+    const double mobileHeight = 844;
+    
+    return Container(
+      width: mobileWidth, // 모바일 너비로 고정
+      height: mobileHeight, // 모바일 높이로 고정
+      child: Stack(
+        children: [
+          // 배경 이미지
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/main_background.png',
+              fit: BoxFit.cover, // 이미지가 컨테이너를 완전히 채우도록
+              errorBuilder: (context, error, stackTrace) {
+                // 이미지 로드 실패시 간단한 에러 메시지
+                return Container(
+                  color: const Color(0xFFE8DCC0),
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image_not_supported,
+                          size: 48,
+                          color: Color(0xFF8B4513),
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          '메인 배경 이미지를 불러올 수 없습니다',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF8B4513),
+                            fontFamily: 'monospace',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // 4개 집들 (모바일 크기 기준으로 고정 위치)
+          _buildHouse(context, candidates[0], mobileWidth * 0.15, mobileHeight * 0.35),    // 이재명 집 (좌상)
+          _buildHouse(context, candidates[1], mobileWidth * 0.55, mobileHeight * 0.35),   // 김문수 집 (우상)
+          _buildHouse(context, candidates[2], mobileWidth * 0.15, mobileHeight * 0.65),    // 이준석 집 (좌하)
+          _buildHouse(context, candidates[3], mobileWidth * 0.55, mobileHeight * 0.65),   // 권영국 집 (우하)
+          // BGM 플레이어를 좌상단에 배치
+          Positioned(
+            top: 20,
+            left: 20,
+            child: _buildBgmPlayer(),
+          ),
+          // D-Day 카운터를 우상단에 배치
+          Positioned(
+            top: 20,
+            right: 20,
+            child: _buildSimpleDDayCounter(),
+          ),
+        ],
       ),
     );
   }

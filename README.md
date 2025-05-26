@@ -65,14 +65,22 @@ lib/
 └── assets/
     └── images/
         ├── main_background.png      # 메인 마을 배경
-        ├── room_background_1.png    # 이재명 방 배경
-        ├── room_background_2.png    # 김문수 방 배경
-        ├── room_background_4.png    # 이준석 방 배경
-        ├── room_background_5.png    # 권영국 방 배경
-        ├── avatar_1.png            # 이재명 아바타
-        ├── avatar_2.png            # 김문수 아바타
-        ├── avatar_4.png            # 이준석 아바타
-        └── avatar_5.png            # 권영국 아바타
+        ├── candidate_1/             # 이재명 후보 이미지들
+        │   ├── room_background_1.png
+        │   ├── avatar_1.png
+        │   └── candidate-1.png
+        ├── candidate_2/             # 김문수 후보 이미지들
+        │   ├── room_background_2.png
+        │   ├── avatar_2.png
+        │   └── candidate-2.png
+        ├── candidate_4/             # 이준석 후보 이미지들
+        │   ├── room_background_4.png
+        │   ├── avatar_4.png
+        │   └── candidate-4.png
+        └── candidate_5/             # 권영국 후보 이미지들
+            ├── room_background_5.png
+            ├── avatar_5.png
+            └── candidate-5.png
 ```
 
 ## 🚀 시작하기
@@ -105,10 +113,10 @@ http://localhost:5000
 
 | 후보 | 정당 | 색상 | 배경 이미지 | 아바타 |
 |------|------|------|-------------|--------|
-| 이재명 | 더불어민주당 | 🔵 파란색 | room_background_1.png | avatar_1.png |
-| 김문수 | 국민의힘 | 🔴 빨간색 | room_background_2.png | avatar_2.png |
-| 이준석 | 개혁신당 | 🟠 주황색 | room_background_4.png | avatar_4.png |
-| 권영국 | 진보당 | 🟡 노란색 | room_background_5.png | avatar_5.png |
+| 이재명 | 더불어민주당 | 🔵 파란색 | candidate_1/room_background_1.png | candidate_1/avatar_1.png |
+| 김문수 | 국민의힘 | 🔴 빨간색 | candidate_2/room_background_2.png | candidate_2/avatar_2.png |
+| 이준석 | 개혁신당 | 🟠 주황색 | candidate_4/room_background_4.png | candidate_4/avatar_4.png |
+| 권영국 | 진보당 | 🟡 노란색 | candidate_5/room_background_5.png | candidate_5/avatar_5.png |
 
 ## 🔧 개발 히스토리
 

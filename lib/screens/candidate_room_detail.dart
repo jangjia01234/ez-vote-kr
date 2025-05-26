@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import '../services/bgm_service.dart';
 
 class CandidateRoomDetail extends StatefulWidget {
   final Map<String, dynamic> candidate;
@@ -10,68 +12,127 @@ class CandidateRoomDetail extends StatefulWidget {
 }
 
 class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
+  final DateTime electionDay = DateTime(2025, 6, 3);
+  final BgmService _bgmService = BgmService();
+  bool _isBgmMuted = true; // 초기값을 true로 설정
+  late StreamSubscription _bgmStateSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _isBgmMuted = _bgmService.isMuted;
+    _setupBgmStateListener();
+  }
+
+  @override
+  void dispose() {
+    _bgmStateSubscription.cancel();
+    super.dispose();
+  }
+
+  void _setupBgmStateListener() {
+    _bgmStateSubscription = _bgmService.mutedStateStream.listen((isMuted) {
+      if (mounted) {
+        setState(() {
+          _isBgmMuted = isMuted;
+        });
+        print('후보 방 BGM 상태 동기화: ${isMuted ? "음소거" : "재생"}');
+      }
+    });
+  }
+
+  void _toggleBgm() async {
+    print('후보 방 BGM 토글 버튼 클릭 - 현재 UI 상태: ${_isBgmMuted ? "음소거" : "재생"}');
+    
+    try {
+      await _bgmService.toggleBgm();
+      // 상태는 스트림을 통해 자동으로 동기화됨
+    } catch (e) {
+      print('BGM 토글 에러: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFE8DCC0), // 밝은 베이지색 배경으로 변경
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            border: Border.all(color: widget.candidate['color'], width: 2),
-          ),
-          child: Text(
-            '${widget.candidate['name']}의 방',
-            style: TextStyle(
-              color: widget.candidate['color'],
-              fontWeight: FontWeight.bold,
-              fontFamily: 'monospace',
-              fontSize: 14,
-            ),
-          ),
-        ),
-        iconTheme: IconThemeData(
-          color: widget.candidate['color'],
-          size: 24,
-        ),
-        leading: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            border: Border.all(color: widget.candidate['color'], width: 2),
-          ),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: widget.candidate['color']),
-            onPressed: () => Navigator.of(context).pop(),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-      ),
       body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Container(
-            margin: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 3),
-            ),
-            child: Stack(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // 모바일 크기로 고정 (iPhone 14 기준)
+            const double mobileWidth = 390;
+            const double mobileHeight = 844;
+            
+            return Stack(
               children: [
-                // 픽셀 아트 방 배경
-                _buildPixelRoom(),
-                // 후보자 캐릭터
-                _buildCandidateCharacter(),
-                // 인터랙티브 오브젝트들
-                ..._buildRoomObjects(),
-                // 대화창
-                _buildDialogBox(),
+                // 모바일 크기로 고정된 게임 화면
+                Container(
+                  width: mobileWidth,
+                  height: mobileHeight,
+                  child: Stack(
+                    children: [
+                      // 픽셀 아트 방 배경
+                      _buildPixelRoom(),
+                      // 후보자 캐릭터
+                      _buildCandidateCharacter(mobileWidth, mobileHeight),
+                      // 인터랙티브 오브젝트들
+                      ..._buildRoomObjects(mobileWidth, mobileHeight),
+                      // 대화창
+                      _buildDialogBox(),
+                    ],
+                  ),
+                ),
+                // BGM 플레이어를 좌상단에 배치
+                Positioned(
+                  top: 20,
+                  left: 20,
+                  child: _buildBgmPlayer(),
+                ),
+                // D-Day 카운터를 우상단에 배치
+                Positioned(
+                  top: 20,
+                  right: 20,
+                  child: _buildSimpleDDayCounter(),
+                ),
+                // 뒤로가기 버튼을 좌하단에 배치
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: widget.candidate['color'], width: 2),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: widget.candidate['color']),
+                      onPressed: () => Navigator.of(context).pop(),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                // 제목을 우하단에 배치
+                Positioned(
+                  bottom: 20,
+                  right: 20,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: widget.candidate['color'], width: 2),
+                    ),
+                    child: Text(
+                      '${widget.candidate['name']}의 방',
+                      style: TextStyle(
+                        color: widget.candidate['color'],
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -80,28 +141,28 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
   Widget _buildPixelRoom() {
     final candidateId = widget.candidate['id'];
     
-    // 각 후보별 배경 이미지 매칭
+    // 각 후보별 빈 배경 이미지 매칭 (오브젝트 배치용)
     String backgroundPath;
     switch (candidateId) {
       case 'lee_jae_myung':
-        backgroundPath = 'assets/images/room_background_1.png';
+        backgroundPath = 'assets/images/candidate_1/room_background_1_empty.png';
         break;
       case 'kim_moon_soo':
-        backgroundPath = 'assets/images/room_background_2.png';
+        backgroundPath = 'assets/images/candidate_2/room_background_2_empty.png';
         break;
       case 'lee_jun_seok':
-        backgroundPath = 'assets/images/room_background_4.png';
+        backgroundPath = 'assets/images/candidate_4/room_background_4_empty.png';
         break;
       case 'kwon_young_guk':
-        backgroundPath = 'assets/images/room_background_5.png';
+        backgroundPath = 'assets/images/candidate_5/room_background_5_empty.png';
         break;
       default:
-        backgroundPath = 'assets/images/room_background_1.png';
+        backgroundPath = 'assets/images/candidate_1/room_background_1_empty.png';
     }
 
     return Container(
       width: double.infinity,
-      height: 600,
+      height: double.infinity,
       child: Stack(
         children: [
           // 배경 이미지
@@ -153,10 +214,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
-  Widget _buildCandidateCharacter() {
+  Widget _buildCandidateCharacter(double screenWidth, double screenHeight) {
     return Positioned(
-      bottom: 120, // 위치 조정
-      left: 100,   // 위치 조정
+      bottom: screenHeight * 0.15,  // 화면 높이의 15% 위치
+      left: screenWidth * 0.08,     // 화면 너비의 8% 위치
       child: Column(
         children: [
           // 후보자 이름
@@ -191,19 +252,19 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     String avatarPath;
     switch (candidateId) {
       case 'lee_jae_myung':
-        avatarPath = 'assets/images/avatar_1.png';
+        avatarPath = 'assets/images/candidate_1/avatar_1.png';
         break;
       case 'kim_moon_soo':
-        avatarPath = 'assets/images/avatar_2.png';
+        avatarPath = 'assets/images/candidate_2/avatar_2.png';
         break;
       case 'lee_jun_seok':
-        avatarPath = 'assets/images/avatar_4.png';
+        avatarPath = 'assets/images/candidate_4/avatar_4.png';
         break;
       case 'kwon_young_guk':
-        avatarPath = 'assets/images/avatar_5.png';
+        avatarPath = 'assets/images/candidate_5/avatar_5.png';
         break;
       default:
-        avatarPath = 'assets/images/avatar_1.png';
+        avatarPath = 'assets/images/candidate_1/avatar_1.png';
     }
 
     return Container(
@@ -234,23 +295,128 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
-  List<Widget> _buildRoomObjects() {
+  List<Widget> _buildRoomObjects(double screenWidth, double screenHeight) {
+    // 이재명 후보의 경우 실제 이미지 오브젝트 사용
+    if (widget.candidate['id'] == 'lee_jae_myung') {
+      return [
+        // 화분 (기후·녹색산업)
+        _buildImageObject(
+          'assets/images/candidate_1/room_flowerPot.png',
+          left: screenWidth * 0.05,
+          top: screenHeight * 0.15,
+          width: screenWidth * 0.22,
+          height: screenWidth * 0.22,
+          title: '🌱 기후·녹색산업',
+          description: '기후위기 대응을 위한 종합 계획!\n\n'
+              '🔋 재생에너지 확대\n'
+              '• 2030년까지 재생에너지 40% 달성\n'
+              '• 태양광·풍력 발전 대폭 확대\n'
+              '• 에너지 자립도 높여 전기료 부담 줄이기\n\n'
+              '💚 녹색 일자리 창출\n'
+              '• 친환경 산업 육성으로 100만 개 일자리\n'
+              '• 청년들을 위한 그린뉴딜 취업 지원\n'
+              '• 탄소중립 기술 개발 투자 확대\n\n'
+              '🌍 지속가능한 미래\n'
+              '• 탄소세 도입으로 기업 책임 강화\n'
+              '• 친환경 교통수단 보급 확대\n'
+              '• 환경교육 의무화로 인식 개선',
+        ),
+        // 컴퓨터 (디지털 전환)
+        _buildImageObject(
+          'assets/images/candidate_1/room_computer.png',
+          right: screenWidth * 0.05,
+          top: screenHeight * 0.12,
+          width: screenWidth * 0.28,
+          height: screenWidth * 0.22,
+          title: '🖥️ 디지털 전환',
+          description: 'AI·데이터 강국으로 도약!\n\n'
+              '🤖 AI 산업 육성\n'
+              '• 국가 AI 전략 수립 및 투자 확대\n'
+              '• AI 전문인력 10만명 양성\n'
+              '• AI 윤리 가이드라인 마련\n\n'
+              '📊 데이터 경제 활성화\n'
+              '• 공공데이터 전면 개방\n'
+              '• 데이터 거래소 설립 운영\n'
+              '• 개인정보보호 강화와 활용 균형\n\n'
+              '🏛️ 디지털 정부 구현\n'
+              '• 모든 행정서비스 온라인화\n'
+              '• 블록체인 기반 투명한 행정\n'
+              '• 디지털 격차 해소 지원\n\n'
+              '💼 디지털 일자리 창출\n'
+              '• IT 스타트업 창업 지원 확대\n'
+              '• 디지털 리터러시 교육 강화',
+        ),
+        // 아파트 (기본주택)
+        _buildImageObject(
+          'assets/images/candidate_1/room_apartment.png',
+          left: screenWidth * 0.33,
+          bottom: screenHeight * 0.25,
+          width: screenWidth * 0.33,
+          height: screenWidth * 0.28,
+          title: '🏘️ 기본주택',
+          description: '모든 국민의 주거권 보장!\n\n'
+              '🏠 기본주택 공급\n'
+              '• 연 50만호 기본주택 건설\n'
+              '• 시세의 50-80% 수준 임대료\n'
+              '• 청년·신혼부부 우선 공급\n\n'
+              '💰 주거비 부담 완화\n'
+              '• 월세 상한제 도입 (연 5% 이내)\n'
+              '• 전세사기 피해 국가 책임제\n'
+              '• 주택담보대출 금리 지원\n\n'
+              '🏗️ 주택 공급 확대\n'
+              '• 3기 신도시 조기 공급\n'
+              '• 역세권 고밀도 개발\n'
+              '• 빈집 활용 임대주택 전환\n\n'
+              '⚖️ 부동산 투기 근절\n'
+              '• 다주택자 중과세 강화\n'
+              '• 부동산 실명제 완전 시행',
+        ),
+        // 서류봉투 (개헌 추진)
+        _buildImageObject(
+          'assets/images/candidate_1/room_suitcase.png',
+          right: screenWidth * 0.33,
+          bottom: screenHeight * 0.18,
+          width: screenWidth * 0.25,
+          height: screenWidth * 0.19,
+          title: '💼 개헌 추진',
+          description: '국회 중심 책임정부 실현!\n\n'
+              '🏛️ 권력구조 개편\n'
+              '• 대통령 4년 중임제 도입\n'
+              '• 국무총리 국회 추천제\n'
+              '• 대통령 권한 분산 및 견제 강화\n\n'
+              '⚖️ 사법부 독립 강화\n'
+              '• 대법원장 국회 추천\n'
+              '• 검찰 수사권 완전 분리\n'
+              '• 사법행정권 독립 보장\n\n'
+              '🗳️ 선거제도 개혁\n'
+              '• 연동형 비례대표제 확대\n'
+              '• 지방선거 정당공천 폐지\n'
+              '• 선거연령 만 18세로 하향\n\n'
+              '📜 기본권 확대\n'
+              '• 노동3권 헌법 명시\n'
+              '• 환경권·알권리 신설\n'
+              '• 지방자치 분권 강화',
+        ),
+      ];
+    }
+    
+    // 다른 후보들은 기존 픽셀 오브젝트 사용 (화면 크기에 맞게 조정)
     return [
       // 책장
-      _buildBookshelf(),
+      _buildBookshelf(screenWidth, screenHeight),
       // 소파
-      _buildSofa(),
+      _buildSofa(screenWidth, screenHeight),
       // 책상
-      _buildDesk(),
+      _buildDesk(screenWidth, screenHeight),
       // 화분
-      _buildPlant(),
+      _buildPlant(screenWidth, screenHeight),
     ];
   }
 
-  Widget _buildBookshelf() {
+  Widget _buildBookshelf(double screenWidth, double screenHeight) {
     return Positioned(
-      left: 50,
-      top: 150,
+      left: screenWidth * 0.14,
+      top: screenHeight * 0.25,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('정책 자료실', '${widget.candidate['name']} 후보의 상세 정책을 확인해보세요!'),
         child: Container(
@@ -303,10 +469,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
-  Widget _buildSofa() {
+  Widget _buildSofa(double screenWidth, double screenHeight) {
     return Positioned(
-      left: 300,
-      bottom: 150,
+      right: screenWidth * 0.14,
+      bottom: screenHeight * 0.25,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('편안한 대화', '${widget.candidate['name']} 후보와 편안하게 대화해보세요!'),
         child: Container(
@@ -365,10 +531,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
-  Widget _buildDesk() {
+  Widget _buildDesk(double screenWidth, double screenHeight) {
     return Positioned(
-      right: 50,
-      bottom: 200,
+      right: screenWidth * 0.14,
+      bottom: screenHeight * 0.33,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('업무 자료', '${widget.candidate['name']} 후보의 업무 계획을 살펴보세요!'),
         child: Container(
@@ -411,10 +577,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
-  Widget _buildPlant() {
+  Widget _buildPlant(double screenWidth, double screenHeight) {
     return Positioned(
-      right: 200,
-      top: 200,
+      left: screenWidth * 0.45,
+      top: screenHeight * 0.33,
       child: GestureDetector(
         onTap: () => _showPolicyDialog('환경 정책', '${widget.candidate['name']} 후보의 환경 정책을 확인해보세요!'),
         child: Container(
@@ -454,13 +620,80 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
+  Widget _buildImageObject(
+    String imagePath, {
+    double? left,
+    double? right,
+    double? top,
+    double? bottom,
+    required double width,
+    required double height,
+    required String title,
+    required String description,
+  }) {
+    return Positioned(
+      left: left,
+      right: right,
+      top: top,
+      bottom: bottom,
+      child: GestureDetector(
+        onTap: () => _showPolicyDialog(title, description),
+        child: Container(
+          width: width,
+          height: height,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  // 이미지 로드 실패시 기본 픽셀 오브젝트 표시
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: widget.candidate['color'].withOpacity(0.3),
+                      border: Border.all(color: Colors.black, width: 2),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_not_supported,
+                            color: widget.candidate['color'],
+                            size: 24,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '이미지 로드 실패',
+                            style: TextStyle(
+                              fontSize: 8,
+                              color: widget.candidate['color'],
+                              fontFamily: 'monospace',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildDialogBox() {
     return Positioned(
-      bottom: 20,
-      left: 20,
-      right: 20,
+      bottom: 10,
+      left: 10,
+      right: 10,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.black,
           border: Border.all(color: widget.candidate['color'], width: 3),
@@ -494,6 +727,118 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
     );
   }
 
+  Widget _buildSimpleDDayCounter() {
+    return StreamBuilder(
+      stream: Stream.periodic(const Duration(seconds: 1)),
+      builder: (context, snapshot) {
+        final now = DateTime.now();
+        final difference = electionDay.difference(now);
+        
+        final days = difference.inDays;
+        final hours = difference.inHours % 24;
+        final minutes = difference.inMinutes % 60;
+        final seconds = difference.inSeconds % 60;
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0xFF8B4513).withOpacity(0.9),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '⏰ D-',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                  Text(
+                    '$days',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.yellow,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontFamily: 'monospace',
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBgmPlayer() {
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: GestureDetector(
+        onTap: _toggleBgm,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _isBgmMuted ? Icons.volume_off : Icons.volume_up,
+                color: _isBgmMuted ? Colors.red : Colors.green,
+                size: 18,
+              ),
+              const SizedBox(width: 3),
+              Text(
+                'BGM',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: _isBgmMuted ? Colors.red : Colors.green,
+                  fontFamily: 'monospace',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showPolicyDialog(String title, String description) {
     showDialog(
       context: context,
@@ -501,7 +846,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
         return Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
+            constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: Colors.black,
@@ -516,9 +861,10 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // 제목 헤더
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: widget.candidate['color'],
                       border: Border.all(color: Colors.black, width: 2),
@@ -526,7 +872,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                     child: Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         fontFamily: 'monospace',
@@ -535,24 +881,51 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // 내용 스크롤 가능한 영역
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          border: Border.all(color: widget.candidate['color'], width: 1),
+                        ),
+                        child: Text(
+                          description,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.6,
+                            color: Colors.white,
+                            fontFamily: 'monospace',
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // 후보자 정보
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: widget.candidate['color'].withOpacity(0.2),
                       border: Border.all(color: widget.candidate['color'], width: 1),
                     ),
                     child: Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
-                        color: Colors.white,
+                      '${widget.candidate['name']} (${widget.candidate['party']})',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: widget.candidate['color'],
                         fontFamily: 'monospace',
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+                  // 닫기 버튼
                   Container(
                     decoration: BoxDecoration(
                       color: widget.candidate['color'],
@@ -562,7 +935,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                         shape: const RoundedRectangleBorder(),
                       ),
                       child: const Text(
@@ -571,6 +944,7 @@ class _CandidateRoomDetailState extends State<CandidateRoomDetail> {
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'monospace',
+                          fontSize: 14,
                         ),
                       ),
                     ),
